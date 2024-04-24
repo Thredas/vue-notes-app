@@ -24,4 +24,10 @@ export default {
   cursor: pointer;
   transition: 0.1s ease;
 }
+
+.button:disabled {
+  cursor: not-allowed;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  color: #a2a2a2 !important;
+}
 </style>

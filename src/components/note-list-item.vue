@@ -15,20 +15,20 @@ const props = defineProps(['id', 'title', 'text']);
 </script>
 
 <template>
-  <div class="note-item" @click="openNoteInfo">
-    <div class="note-item__content-click-blocker"></div>
+  <button class="note-item" @click="openNoteInfo">
+    <span class="note-item__content-click-blocker"></span>
 
-    <div class="note-item__title">
+    <span class="note-item__title">
       <span class="note-item__title_text">{{ props.title }}</span>
 
-      <div class="note-item__buttons">
-        <CustomButton class="note-item__button">
-          <!--<span class="material-symbols-rounded">open_in_new</span>-->
-        </CustomButton>
-      </div>
-    </div>
+      <span class="note-item__buttons">
+        <!--        <CustomButton class="note-item__button">-->
+        <!--          <span class="material-symbols-rounded">menu</span>-->
+        <!--        </CustomButton>-->
+      </span>
+    </span>
 
-    <div class="note-item__text-container">
+    <span class="note-item__text-container">
       <quill-editor
         :content="props.text"
         content-type="html"
@@ -36,12 +36,14 @@ const props = defineProps(['id', 'title', 'text']);
         read-only
       >
       </quill-editor>
-    </div>
-  </div>
+    </span>
+  </button>
 </template>
 
 <style scoped>
 .note-item {
+  font-family: 'Golos Text', sans-serif;
+  text-align: start;
   box-sizing: border-box;
   position: relative;
   flex: 1;
@@ -55,14 +57,12 @@ const props = defineProps(['id', 'title', 'text']);
   border-radius: 24px;
   border: 2px rgba(17, 17, 17, 0.1) solid;
   background-color: var(--item-background);
-  //box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   transition: 0.15s ease;
   overflow: hidden;
 }
 
 .note-item:hover {
-  //scale: 1.02;
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
   border: 2px #2563eb solid;
 }

@@ -50,7 +50,7 @@ const sendFormData = () => {
 
 <template>
   <ModalWindow :close-modal-func="closeForm">
-    <form class="note-form" @submit.prevent>
+    <form class="note-form" @submit.prevent @submit="sendFormData">
       <div class="note-form-title-container">
         <CustomButton
           v-if="!!currentOpenedNote"
@@ -92,9 +92,7 @@ const sendFormData = () => {
       >
       </quill-editor>
 
-      <CustomButton class="form-button" @click="sendFormData">
-        Save
-      </CustomButton>
+      <CustomButton class="form-button" type="submit">Save</CustomButton>
     </form>
   </ModalWindow>
 </template>

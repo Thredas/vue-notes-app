@@ -5,9 +5,9 @@ import { storeToRefs } from 'pinia';
 import { QuillEditor } from '@vueup/vue-quill';
 
 const notesStore = useNotesStore();
-const { toggleNoteInfo, toggleNoteForm, setCurrentNote, removeNote } =
+const { toggleNoteInfo, toggleNoteForm, setCurrentNote, removeNote, editNote } =
   notesStore;
-const { currentOpenedNote } = storeToRefs(notesStore);
+const { currentOpenedNote, noteFolders } = storeToRefs(notesStore);
 
 const switchToEditMode = () => {
   toggleNoteInfo();
@@ -17,6 +17,13 @@ const switchToEditMode = () => {
 const closeModal = () => {
   setCurrentNote(null);
   toggleNoteInfo();
+};
+
+const changeFolderInNote = (folderId) => {
+  editNote(currentOpenedNote.value.id, {
+    ...currentOpenedNote.value,
+    folders: [folderId],
+  });
 };
 </script>
 
@@ -57,7 +64,27 @@ const closeModal = () => {
         </quill-editor>
       </div>
 
-      <div class="note-info__footer"></div>
+      <div class="note-info__footer">
+        <select
+          class="note-info__footer__folder_select"
+          @change="(e) => changeFolderInNote(e.target.value)"
+        >
+          <option
+            :selected="
+              !currentOpenedNote.folders ||
+              currentOpenedNote.folders.length === 0
+            "
+          ></option>
+          <option
+            v-for="noteFolder in noteFolders"
+            :key="noteFolder.id"
+            :value="noteFolder.id"
+            :selected="currentOpenedNote.folders?.includes(noteFolder.id)"
+          >
+            {{ noteFolder.name }}
+          </option>
+        </select>
+      </div>
     </div>
   </ModalWindow>
 </template>
@@ -109,7 +136,14 @@ const closeModal = () => {
 }
 
 .note-info__footer {
+  box-sizing: border-box;
   border-top: 1px var(--secondary) solid;
-  height: 48px;
+  height: 70px;
+  padding: 16px 24px 24px;
+}
+
+.note-info__footer__folder_select {
+  width: 150px;
+  height: 100%;
 }
 </style>

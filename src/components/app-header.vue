@@ -23,7 +23,7 @@ const { toggleNoteForm } = notesStore;
         />
 
         <CustomButton class="header__create-button" @click="toggleNoteForm">
-          <span class="material-symbols-rounded">add</span>
+          <span class="material-symbols-rounded">note_stack_add</span>
           Create note
         </CustomButton>
 

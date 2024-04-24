@@ -12,13 +12,18 @@ import NoteInfo from '@/components/note-info.vue';
 
 const notesStore = useNotesStore();
 const { isLoading, showNoteInfo, showNoteForm } = storeToRefs(notesStore);
-const { setIsLoading, setNotes } = notesStore;
+const { setIsLoading, setNotes, setNoteFolders } = notesStore;
 
 onMounted(async () => {
   const savedNotesLocalStorage = localStorage.getItem('notes');
   const parsedNotes = await JSON.parse(savedNotesLocalStorage);
 
+  const savedFoldersFromLocalStorage = localStorage.getItem('noteFolders');
+  const parsedFolders = await JSON.parse(savedFoldersFromLocalStorage);
+
   if (parsedNotes) setNotes([...parsedNotes]);
+  if (parsedFolders) setNoteFolders([...parsedFolders]);
+
   setIsLoading(false);
 });
 

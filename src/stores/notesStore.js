@@ -4,10 +4,16 @@ import { nanoid } from 'nanoid';
 
 export const useNotesStore = defineStore('notes', () => {
   const isLoading = ref(true);
+
   const notes = ref([]);
   const showNoteForm = ref(false);
   const currentOpenedNote = ref(null);
   const showNoteInfo = ref(false);
+
+  const searchQuery = ref('');
+
+  const noteFolders = ref([]);
+  const selectedFolderId = ref(null);
 
   const setIsLoading = (value) => (isLoading.value = value);
   const setNotes = (newNotes) => (notes.value = newNotes);
@@ -63,12 +69,21 @@ export const useNotesStore = defineStore('notes', () => {
     }
   }
 
+  const setSelectedFolderId = (folderId) => (selectedFolderId.value = folderId);
+  const setNoteFolders = (newNoteFolders) => {
+    noteFolders.value = newNoteFolders;
+    localStorage.setItem('noteFolders', JSON.stringify(noteFolders.value));
+  };
+
   return {
     isLoading,
     notes,
     showNoteForm,
     showNoteInfo,
     currentOpenedNote,
+    searchQuery,
+    noteFolders,
+    selectedFolderId,
     setIsLoading,
     setNotes,
     toggleNoteForm,
@@ -78,5 +93,7 @@ export const useNotesStore = defineStore('notes', () => {
     removeNote,
     setCurrentNote,
     findNoteById,
+    setSelectedFolderId,
+    setNoteFolders,
   };
 });

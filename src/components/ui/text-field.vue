@@ -12,21 +12,17 @@ export default {
     updateInput(event) {
       this.$emit('update:modelValue', event.target.value);
     },
+    focus() {
+      this.$refs.input.focus();
+    },
   },
 };
 </script>
 
 <template>
-  <textarea
-    v-if="type === 'textarea'"
-    class="input"
-    :class="inputClasses"
-    :value="modelValue"
-    @input="updateInput"
-    :placeholder="placeholder"
-  />
-  <div class="input-container" v-else>
+  <div class="input-container">
     <input
+      ref="input"
       class="input"
       :class="[{ 'input-with-icon': !!icon }, inputClasses]"
       :type="type"

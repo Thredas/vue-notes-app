@@ -1,16 +1,31 @@
 <script setup>
 import NoteListItem from '@/components/note-list-item.vue';
 import { useNotesStore } from '@/stores/notesStore';
+import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 
 const notesStore = useNotesStore();
-const notes = notesStore.notes;
+const { notes, selectedFolderId } = storeToRefs(notesStore);
+
+const filteredNotes = ref([...notes.value]);
+
+watch(selectedFolderId, () => {
+  if (!selectedFolderId.value) {
+    filteredNotes.value = notes.value;
+    return;
+  }
+
+  filteredNotes.value = notes.value.filter((note) =>
+    note.folders?.includes(selectedFolderId.value)
+  );
+});
 </script>
 
 <template>
-  <div v-if="notes.length > 0">
+  <div v-if="filteredNotes.length > 0">
     <div class="note-list">
       <NoteListItem
-        v-for="note in notes"
+        v-for="note in filteredNotes"
         :key="note.id"
         :id="note.id"
         :title="note.title"
