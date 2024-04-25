@@ -1,13 +1,32 @@
 <script setup>
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOptions,
+  ListboxOption,
+} from '@headlessui/vue';
 import ModalWindow from '@/components/ui/modal-window.vue';
+
 import { useNotesStore } from '@/stores/notesStore';
 import { storeToRefs } from 'pinia';
 import { QuillEditor } from '@vueup/vue-quill';
+import { ref, watch } from 'vue';
 
 const notesStore = useNotesStore();
-const { toggleNoteInfo, toggleNoteForm, setCurrentNote, removeNote, editNote } =
-  notesStore;
 const { currentOpenedNote, noteFolders } = storeToRefs(notesStore);
+const {
+  toggleNoteInfo,
+  toggleNoteForm,
+  setCurrentNote,
+  removeNote,
+  changeFoldersInNote,
+} = notesStore;
+
+const selectedFolders = ref(currentOpenedNote.value.folders ?? []);
+
+watch(selectedFolders, () => {
+  changeFoldersInNote(currentOpenedNote.value.id, selectedFolders);
+});
 
 const switchToEditMode = () => {
   toggleNoteInfo();
@@ -17,13 +36,6 @@ const switchToEditMode = () => {
 const closeModal = () => {
   setCurrentNote(null);
   toggleNoteInfo();
-};
-
-const changeFolderInNote = (folderId) => {
-  editNote(currentOpenedNote.value.id, {
-    ...currentOpenedNote.value,
-    folders: [folderId],
-  });
 };
 </script>
 
@@ -65,25 +77,53 @@ const changeFolderInNote = (folderId) => {
       </div>
 
       <div class="note-info__footer">
-        <select
-          class="note-info__footer__folder_select"
-          @change="(e) => changeFolderInNote(e.target.value)"
+        <Listbox
+          as="div"
+          v-model="selectedFolders"
+          style="position: relative"
+          multiple
         >
-          <option
-            :selected="
-              !currentOpenedNote.folders ||
-              currentOpenedNote.folders.length === 0
-            "
-          ></option>
-          <option
-            v-for="noteFolder in noteFolders"
-            :key="noteFolder.id"
-            :value="noteFolder.id"
-            :selected="currentOpenedNote.folders?.includes(noteFolder.id)"
-          >
-            {{ noteFolder.name }}
-          </option>
-        </select>
+          <ListboxOptions class="note-info__footer__folder-select__options">
+            <ListboxOption
+              class="note-info__footer__folder-select__option"
+              v-for="noteFolder in noteFolders"
+              :key="noteFolder.id"
+              :value="noteFolder.id"
+              v-slot="{ selected }"
+            >
+              <span class="note-info__footer__folder-select__option__text">
+                <span class="material-symbols-rounded outlined">folder</span>
+                {{ noteFolder.name }}
+              </span>
+
+              <span v-show="selected" class="material-symbols-rounded outlined"
+                >done</span
+              >
+            </ListboxOption>
+          </ListboxOptions>
+
+          <ListboxButton class="note-info__footer__folder-select">
+            <span class="material-symbols-rounded">folder</span>
+
+            <span
+              v-if="selectedFolders.length"
+              class="note-info__footer__folder-text"
+            >
+              {{
+                selectedFolders
+                  .map((folderId) => {
+                    return noteFolders.find((folder) => folder.id === folderId)
+                      ?.name;
+                  })
+                  .join(', ')
+              }}
+            </span>
+
+            <span v-else class="note-info__footer__folder-text placeholder">
+              Select folders
+            </span>
+          </ListboxButton>
+        </Listbox>
       </div>
     </div>
   </ModalWindow>
@@ -139,11 +179,74 @@ const changeFolderInNote = (folderId) => {
   box-sizing: border-box;
   border-top: 1px var(--secondary) solid;
   height: 70px;
-  padding: 16px 24px 24px;
+  padding: 16px;
 }
 
-.note-info__footer__folder_select {
-  width: 150px;
+.note-info__footer__folder-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 200px;
+  width: 200px;
   height: 100%;
+  background-color: transparent;
+  border: 2px var(--secondary) solid;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.material-symbols-rounded {
+  color: var(--text-secondary);
+}
+
+.note-info__footer__folder-text {
+  font-family: 'Golos Text', sans-serif;
+  text-align: start;
+  max-height: 16px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
+.note-info__footer__folder-text.placeholder {
+  color: var(--text-secondary);
+}
+
+.note-info__footer__folder-select__options {
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 36px;
+  min-width: 250px;
+  width: fit-content;
+  background-color: var(--item-background);
+  border: 2px var(--secondary) solid;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  height: fit-content;
+  padding-left: 0 !important;
+  overflow: hidden;
+}
+
+.note-info__footer__folder-select__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px !important;
+  cursor: pointer;
+}
+
+.note-info__footer__folder-select__option__text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.note-info__footer__folder-select__option:hover {
+  background-color: var(--secondary);
 }
 </style>

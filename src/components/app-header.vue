@@ -50,7 +50,7 @@ const { toggleNoteForm } = notesStore;
   border: 1px rgba(17, 17, 17, 0.1) solid;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
   z-index: 2;
-  height: 68px;
+  height: 64px;
 }
 
 header {

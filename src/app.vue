@@ -60,7 +60,7 @@ watch([showNoteInfo, showNoteForm], (currentValues) => {
   display: flex;
   gap: 48px;
   max-width: 1280px;
-  margin-top: 64px;
+  margin-top: 66px;
 }
 </style>
 

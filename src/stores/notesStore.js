@@ -10,36 +10,44 @@ export const useNotesStore = defineStore('notes', () => {
   const currentOpenedNote = ref(null);
   const showNoteInfo = ref(false);
 
-  const searchQuery = ref('');
-
+  const PINNED_FOLDER_ID = ref('pinned_folder_id');
   const noteFolders = ref([]);
   const selectedFolderId = ref(null);
 
+  const searchQuery = ref('');
+
+  // main setters
   const setIsLoading = (value) => (isLoading.value = value);
   const setNotes = (newNotes) => (notes.value = newNotes);
-  const toggleNoteForm = () => (showNoteForm.value = !showNoteForm.value);
-  const toggleNoteInfo = () => (showNoteInfo.value = !showNoteInfo.value);
-
-  function findNoteById(id) {
-    return notes.value.findIndex((note) => note.id === id);
-  }
-
-  function setCurrentNote(id) {
+  const setCurrentNote = (id) => {
     if (!id) {
       currentOpenedNote.value = null;
       return;
     }
 
     currentOpenedNote.value = notes.value.find((note) => note.id === id);
-  }
+  };
 
-  function addNote(title, text) {
-    const newNote = { id: nanoid(), title, text };
+  const findNoteById = (id) => notes.value.findIndex((note) => note.id === id);
+
+  // modal toggle options
+  const toggleNoteForm = () => (showNoteForm.value = !showNoteForm.value);
+  const toggleNoteInfo = () => (showNoteInfo.value = !showNoteInfo.value);
+
+  // Actions with notes
+  const addNote = (title, text) => {
+    const newNote = {
+      id: nanoid(),
+      title,
+      text,
+      createDate: new Date.now(),
+      updateDate: null,
+    };
+
     notes.value.push(newNote);
     localStorage.setItem('notes', JSON.stringify(notes.value));
-  }
-
-  function removeNote(id) {
+  };
+  const removeNote = (id) => {
     const deleteConfirmation = confirm(
       'Are you sure want to delete this note?'
     );
@@ -55,24 +63,50 @@ export const useNotesStore = defineStore('notes', () => {
         alert("Can't delete a note, that doesn't exist");
       }
     }
-  }
-
-  function editNote(id, noteObj) {
+  };
+  const editNote = (id, noteObj) => {
     const noteIdx = findNoteById(id);
 
     if (noteIdx !== -1) {
-      notes.value.splice(noteIdx, 1, { ...notes.value[noteIdx], ...noteObj });
+      notes.value[noteIdx] = {
+        ...notes.value[noteIdx],
+        ...noteObj,
+        updateDate: new Date.now(),
+      };
+
       localStorage.setItem('notes', JSON.stringify(notes.value));
       setCurrentNote(id);
     } else {
       alert("Can't edit a note, that doesn't exist");
     }
-  }
+  };
 
+  // Actions with folders
   const setSelectedFolderId = (folderId) => (selectedFolderId.value = folderId);
   const setNoteFolders = (newNoteFolders) => {
     noteFolders.value = newNoteFolders;
     localStorage.setItem('noteFolders', JSON.stringify(noteFolders.value));
+  };
+  const changeFoldersInNote = (noteId, newFolders) => {
+    const noteIdx = findNoteById(noteId);
+    const note = notes.value[noteIdx];
+
+    if (note) {
+      if (!note.folders) note.folders = [];
+      note.folders = newFolders;
+
+      editNote(noteId, note);
+    } else {
+      alert('Note with this ID was not found');
+    }
+  };
+  const toggleIsNotePinned = (noteId) => {
+    const noteIdx = findNoteById(noteId);
+    const note = notes.value[noteIdx];
+
+    if (note.isPinned === undefined) note.isPinned = false;
+
+    editNote(noteId, { ...notes.value[noteIdx], isPinned: !note.isPinned });
   };
 
   return {
@@ -84,6 +118,7 @@ export const useNotesStore = defineStore('notes', () => {
     searchQuery,
     noteFolders,
     selectedFolderId,
+    PINNED_FOLDER_ID,
     setIsLoading,
     setNotes,
     toggleNoteForm,
@@ -95,5 +130,7 @@ export const useNotesStore = defineStore('notes', () => {
     findNoteById,
     setSelectedFolderId,
     setNoteFolders,
+    changeFoldersInNote,
+    toggleIsNotePinned,
   };
 });

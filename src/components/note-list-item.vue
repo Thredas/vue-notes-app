@@ -4,25 +4,36 @@ import { QuillEditor } from '@vueup/vue-quill';
 import { useNotesStore } from '@/stores/notesStore';
 
 const notesStore = useNotesStore();
-const { setCurrentNote, toggleNoteInfo } = notesStore;
+const { setCurrentNote, toggleNoteInfo, toggleIsNotePinned } = notesStore;
 
 const openNoteInfo = () => {
-  setCurrentNote(props.id);
+  setCurrentNote(props.note.id);
   toggleNoteInfo();
 };
 
-const props = defineProps(['id', 'title', 'text']);
+const props = defineProps(['note']);
 </script>
 
 <template>
   <button class="note-item" @click="openNoteInfo">
-    <!--<span class="note-item__content-click-blocker"></span>-->
-
     <span class="note-item__title">
-      <span class="note-item__title_text">{{ props.title }}</span>
+      <span class="note-item__title_text">{{ props.note.title }}</span>
 
       <span class="note-item__buttons">
-        <CustomButton class="note-item__button">
+        <CustomButton
+          class="note-item__button"
+          @click.stop
+          @click="toggleIsNotePinned(props.note.id)"
+        >
+          <span
+            class="material-symbols-rounded"
+            :class="{ outlined: !props.note.isPinned }"
+          >
+            keep
+          </span>
+        </CustomButton>
+
+        <CustomButton class="note-item__button" @click.stop>
           <span class="material-symbols-rounded">more_vert</span>
         </CustomButton>
       </span>
@@ -30,7 +41,7 @@ const props = defineProps(['id', 'title', 'text']);
 
     <span class="note-item__text-container">
       <quill-editor
-        :content="props.text"
+        :content="props.note.text"
         content-type="html"
         theme=""
         read-only
@@ -65,12 +76,6 @@ const props = defineProps(['id', 'title', 'text']);
 .note-item:hover {
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
   border: 2px #2563eb solid;
-}
-
-.note-item__content-click-blocker {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
 }
 
 .note-item__title {
@@ -119,7 +124,7 @@ const props = defineProps(['id', 'title', 'text']);
   background-color: transparent;
 }
 
-.note-button:hover {
-  background-color: transparent;
+.note-item__button:hover {
+  background-color: var(--secondary);
 }
 </style>

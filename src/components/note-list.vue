@@ -1,22 +1,32 @@
 <script setup>
 import NoteListItem from '@/components/note-list-item.vue';
 import { useNotesStore } from '@/stores/notesStore';
-import { ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 
 const notesStore = useNotesStore();
-const { notes, selectedFolderId, searchQuery } = storeToRefs(notesStore);
+const { notes, selectedFolderId, searchQuery, PINNED_FOLDER_ID } =
+  storeToRefs(notesStore);
 
-const notesFilteredByFolder = ref([...notes.value]);
-const notesFilteredBySearchQuery = ref([...notesFilteredByFolder.value]);
+const notesFilteredByFolder = ref(notes.value);
+const notesFilteredBySearchQuery = ref(notesFilteredByFolder.value);
+
+const pinnedNotes = computed(() =>
+  notesFilteredBySearchQuery.value.filter((arrNote) => arrNote.isPinned)
+);
+const notPinnedNotes = computed(() =>
+  notesFilteredBySearchQuery.value.filter((arrNote) => !arrNote.isPinned)
+);
 
 watchEffect(() => {
-  if (selectedFolderId.value) {
+  if (selectedFolderId.value === PINNED_FOLDER_ID.value) {
+    notesFilteredByFolder.value = notes.value.filter((note) => note.isPinned);
+  } else if (selectedFolderId.value) {
     notesFilteredByFolder.value = notes.value.filter((note) => {
       return note.folders?.includes(selectedFolderId.value);
     });
   } else {
-    notesFilteredByFolder.value = [...notes.value];
+    notesFilteredByFolder.value = notes.value;
   }
 
   if (searchQuery.value) {
@@ -44,13 +54,25 @@ watchEffect(() => {
 
 <template>
   <div v-if="notesFilteredBySearchQuery.length > 0">
+    <div class="note-list__pinned__container" v-show="pinnedNotes.length > 0">
+      <span
+        v-show="selectedFolderId !== PINNED_FOLDER_ID"
+        class="note-list__pinned__title"
+      >
+        <span class="folders-item-icon material-symbols-rounded">keep</span>
+        Pinned notes
+      </span>
+
+      <div class="note-list__pinned">
+        <NoteListItem v-for="note in pinnedNotes" :key="note.id" :note="note" />
+      </div>
+    </div>
+
     <div class="note-list">
       <NoteListItem
-        v-for="note in notesFilteredBySearchQuery"
+        v-for="note in notPinnedNotes"
         :key="note.id"
-        :id="note.id"
-        :title="note.title"
-        :text="note.text"
+        :note="note"
       />
     </div>
   </div>
@@ -85,5 +107,23 @@ watchEffect(() => {
 
 .empty-note-list-text {
   color: #656565;
+}
+
+.note-list__pinned {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-basis: 256px;
+  gap: 16px;
+  padding: 16px 16px 32px 0;
+}
+
+.note-list__pinned__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 40px 0 0 8px;
+  color: var(--text-secondary);
 }
 </style>

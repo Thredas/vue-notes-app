@@ -2,14 +2,12 @@
 import { useNotesStore } from '@/stores/notesStore';
 import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';
-import { nanoid } from 'nanoid';
 import CustomButton from '@/components/ui/custom-button.vue';
 import FoldersMenuItem from '@/components/folders-menu-item.vue';
 
-const PINNED_FOLDER_ID = ref('pinned' + nanoid());
-
 const notesStore = useNotesStore();
-const { noteFolders, selectedFolderId } = storeToRefs(notesStore);
+const { noteFolders, selectedFolderId, PINNED_FOLDER_ID } =
+  storeToRefs(notesStore);
 const { setSelectedFolderId } = notesStore;
 
 const hasShallowNoteFolder = ref(false);
@@ -70,7 +68,7 @@ watch(noteFolders, () => (hasShallowNoteFolder.value = false));
   box-sizing: border-box;
   min-width: 250px;
   max-width: 250px;
-  padding: 48px 0 32px 16px;
+  padding: 32px 0 32px 16px;
 }
 
 .folders-menu {
