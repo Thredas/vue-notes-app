@@ -1,7 +1,9 @@
 <script setup>
 import { useNotesStore } from '@/stores/notesStore';
+import { storeToRefs } from 'pinia';
 
 const notesStore = useNotesStore();
+const { searchQuery } = storeToRefs(notesStore);
 const { toggleNoteForm } = notesStore;
 </script>
 
@@ -20,6 +22,7 @@ const { toggleNoteForm } = notesStore;
           input-classes="header__search-input"
           type="search"
           placeholder="Search..."
+          v-model="searchQuery"
         />
 
         <CustomButton class="header__create-button" @click="toggleNoteForm">

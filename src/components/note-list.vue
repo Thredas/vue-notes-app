@@ -1,31 +1,52 @@
 <script setup>
 import NoteListItem from '@/components/note-list-item.vue';
 import { useNotesStore } from '@/stores/notesStore';
-import { ref, watch } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 
 const notesStore = useNotesStore();
-const { notes, selectedFolderId } = storeToRefs(notesStore);
+const { notes, selectedFolderId, searchQuery } = storeToRefs(notesStore);
 
-const filteredNotes = ref([...notes.value]);
+const notesFilteredByFolder = ref([...notes.value]);
+const notesFilteredBySearchQuery = ref([...notesFilteredByFolder.value]);
 
-watch(selectedFolderId, () => {
-  if (!selectedFolderId.value) {
-    filteredNotes.value = notes.value;
-    return;
+watchEffect(() => {
+  if (selectedFolderId.value) {
+    notesFilteredByFolder.value = notes.value.filter((note) => {
+      return note.folders?.includes(selectedFolderId.value);
+    });
+  } else {
+    notesFilteredByFolder.value = [...notes.value];
   }
 
-  filteredNotes.value = notes.value.filter((note) =>
-    note.folders?.includes(selectedFolderId.value)
-  );
+  if (searchQuery.value) {
+    const formattedSearchQuery = searchQuery.value.toLowerCase().trim();
+
+    notesFilteredBySearchQuery.value = notesFilteredByFolder.value.filter(
+      (note) => {
+        const formattedTitle = note.title?.toLowerCase().trim();
+        const formattedText = note.text
+          ?.toLowerCase()
+          .trim()
+          .replace(/<[^>]*>/g, ''); // remove all html tags
+
+        return (
+          formattedTitle?.includes(formattedSearchQuery) ||
+          formattedText?.includes(formattedSearchQuery)
+        );
+      }
+    );
+  } else {
+    notesFilteredBySearchQuery.value = [...notesFilteredByFolder.value];
+  }
 });
 </script>
 
 <template>
-  <div v-if="filteredNotes.length > 0">
+  <div v-if="notesFilteredBySearchQuery.length > 0">
     <div class="note-list">
       <NoteListItem
-        v-for="note in filteredNotes"
+        v-for="note in notesFilteredBySearchQuery"
         :key="note.id"
         :id="note.id"
         :title="note.title"

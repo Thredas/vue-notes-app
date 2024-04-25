@@ -16,15 +16,15 @@ const props = defineProps(['id', 'title', 'text']);
 
 <template>
   <button class="note-item" @click="openNoteInfo">
-    <span class="note-item__content-click-blocker"></span>
+    <!--<span class="note-item__content-click-blocker"></span>-->
 
     <span class="note-item__title">
       <span class="note-item__title_text">{{ props.title }}</span>
 
       <span class="note-item__buttons">
-        <!--        <CustomButton class="note-item__button">-->
-        <!--          <span class="material-symbols-rounded">menu</span>-->
-        <!--        </CustomButton>-->
+        <CustomButton class="note-item__button">
+          <span class="material-symbols-rounded">more_vert</span>
+        </CustomButton>
       </span>
     </span>
 
@@ -57,7 +57,7 @@ const props = defineProps(['id', 'title', 'text']);
   border-radius: 24px;
   border: 2px rgba(17, 17, 17, 0.1) solid;
   background-color: var(--item-background);
-  cursor: pointer;
+  //cursor: pointer;
   transition: 0.15s ease;
   overflow: hidden;
 }
@@ -113,7 +113,7 @@ const props = defineProps(['id', 'title', 'text']);
 }
 
 .note-item__button {
-  padding: 6px;
+  padding: 4px !important;
   border-radius: 8px;
   color: var(--text-secondary);
   background-color: transparent;
