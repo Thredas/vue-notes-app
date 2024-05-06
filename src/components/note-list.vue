@@ -12,10 +12,14 @@ const notesFilteredByFolder = ref(notes.value);
 const notesFilteredBySearchQuery = ref(notesFilteredByFolder.value);
 
 const pinnedNotes = computed(() =>
-  notesFilteredBySearchQuery.value.filter((arrNote) => arrNote.isPinned)
+  notesFilteredBySearchQuery.value
+    .filter((arrNote) => arrNote.isPinned)
+    .sort((a, b) => b.updateDate - a.updateDate)
 );
 const notPinnedNotes = computed(() =>
-  notesFilteredBySearchQuery.value.filter((arrNote) => !arrNote.isPinned)
+  notesFilteredBySearchQuery.value
+    .filter((arrNote) => !arrNote.isPinned)
+    .reverse()
 );
 
 watchEffect(() => {
@@ -119,11 +123,35 @@ watchEffect(() => {
   padding: 16px 16px 32px 0;
 }
 
+.note-list__pinned__container {
+  padding-top: 16px;
+}
+
 .note-list__pinned__title {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 40px 0 0 8px;
+  margin: 24px 0 0 8px;
   color: var(--text-secondary);
+}
+
+@media (max-width: 1200px) {
+  .note-list {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .note-list__pinned {
+    padding: 16px 0 32px;
+    gap: 6px;
+  }
+
+  .note-list__pinned__container {
+    padding: 6px;
+  }
+
+  .note-list__pinned__title {
+    margin-top: 16px;
+  }
 }
 </style>

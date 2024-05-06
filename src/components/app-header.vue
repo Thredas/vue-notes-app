@@ -97,7 +97,7 @@ header {
 .header__create-button {
   background-color: var(--primary);
   color: var(--text-light);
-  font-size: 16px !important;
+  font-size: 15px !important;
   width: fit-content !important;
   border-radius: 32px !important;
 }
@@ -117,5 +117,11 @@ header {
 .user-avatar-placeholder {
   color: var(--text-secondary);
   font-size: 24px !important;
+}
+
+@media (max-width: 1200px) {
+  .header__right-side {
+    display: none;
+  }
 }
 </style>

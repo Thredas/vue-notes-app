@@ -40,7 +40,7 @@ export const useNotesStore = defineStore('notes', () => {
       id: nanoid(),
       title,
       text,
-      createDate: new Date.now(),
+      createDate: Date.now(),
       updateDate: null,
     };
 
@@ -71,7 +71,7 @@ export const useNotesStore = defineStore('notes', () => {
       notes.value[noteIdx] = {
         ...notes.value[noteIdx],
         ...noteObj,
-        updateDate: new Date.now(),
+        updateDate: Date.now(),
       };
 
       localStorage.setItem('notes', JSON.stringify(notes.value));

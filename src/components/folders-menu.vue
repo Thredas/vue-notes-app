@@ -99,4 +99,10 @@ watch(noteFolders, () => (hasShallowNoteFolder.value = false));
 .folder-create-button:hover {
   background-color: var(--secondary);
 }
+
+@media (max-width: 1200px) {
+  .folders-menu__container {
+    display: none;
+  }
+}
 </style>

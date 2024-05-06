@@ -9,10 +9,11 @@ import FoldersMenu from '@/components/folders-menu.vue';
 import { useNotesStore } from '@/stores/notesStore';
 import { storeToRefs } from 'pinia';
 import NoteInfo from '@/components/note-info.vue';
+import CustomButton from '@/components/ui/custom-button.vue';
 
 const notesStore = useNotesStore();
 const { isLoading, showNoteInfo, showNoteForm } = storeToRefs(notesStore);
-const { setIsLoading, setNotes, setNoteFolders } = notesStore;
+const { setIsLoading, setNotes, setNoteFolders, toggleNoteForm } = notesStore;
 
 onMounted(async () => {
   const savedNotesLocalStorage = localStorage.getItem('notes');
@@ -45,22 +46,61 @@ watch([showNoteInfo, showNoteForm], (currentValues) => {
       <NoteList />
       <NoteInfo v-if="showNoteInfo" />
       <NoteForm v-if="showNoteForm" />
+
+      <CustomButton class="add-note-fab" @click="toggleNoteForm">
+        <span class="material-symbols-rounded">note_stack_add</span>
+      </CustomButton>
     </div>
   </div>
 </template>
 
 <style>
 .app-container-wrapper {
+  position: static;
   display: flex;
   justify-content: center;
 }
 
 .app-container {
+  position: relative;
   flex: 1;
   display: flex;
   gap: 48px;
   max-width: 1280px;
   margin-top: 66px;
+}
+
+.add-note-fab {
+  position: fixed;
+  bottom: 32px;
+  right: calc(50% - 610px);
+  width: 64px;
+  height: 64px;
+  background-color: var(--primary);
+  color: var(--text-light);
+  border-radius: 50% !important;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+}
+
+.add-note-fab:hover {
+  background-color: var(--primary-hover);
+}
+
+.add-note-fab .material-symbols-rounded {
+  font-size: 28px;
+}
+
+@media (max-width: 1280px) {
+  .add-note-fab {
+    right: 32px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .app-container {
+    display: block;
+  }
 }
 </style>
 

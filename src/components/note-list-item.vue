@@ -83,6 +83,7 @@ const props = defineProps(['note']);
   align-items: start;
   justify-content: space-between;
   gap: 16px;
+  width: 100%;
 }
 
 .note-item__title_text {
@@ -126,5 +127,40 @@ const props = defineProps(['note']);
 
 .note-item__button:hover {
   background-color: var(--secondary);
+}
+
+@media (max-width: 1200px) {
+  .note-item {
+    flex: 1;
+    min-width: 170px;
+    max-width: calc(50%);
+    height: 270px;
+    padding: 16px;
+    border-radius: 16px;
+    gap: 8px;
+  }
+
+  .note-item__title {
+    gap: 4px;
+  }
+
+  .note-item__buttons {
+    gap: 4px;
+  }
+
+  .note-item__title_text {
+    font-size: 16px;
+  }
+
+  .note-item__text-container {
+    max-height: 280px;
+    overflow: hidden;
+  }
+
+  :global(
+      .note-item__text-container .ql-container.ql-disabled .ql-editor.ql-blank
+    ) {
+    font-size: 14px;
+  }
 }
 </style>

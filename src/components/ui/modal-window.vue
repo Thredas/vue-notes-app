@@ -36,5 +36,15 @@ defineProps(['isOpen', 'closeModalFunc']);
   border-radius: 24px;
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
   z-index: 3;
+  max-height: 100svh;
+}
+
+@media (max-width: 1200px) {
+  .modal-window {
+    border-radius: 0;
+    height: 100svh;
+    width: 100svw;
+    padding: 0;
+  }
 }
 </style>
