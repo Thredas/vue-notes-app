@@ -71,7 +71,7 @@ watch([showNoteInfo, showNoteForm], (currentValues) => {
 }
 
 .add-note-fab {
-  position: fixed;
+  position: fixed !important;
   bottom: 32px;
   right: calc(50% - 610px);
   width: 64px;

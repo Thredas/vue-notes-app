@@ -9,6 +9,7 @@
   --secondary: rgba(131, 130, 127, 0.15);
   --secondar-hover: rgba(229, 101, 56, 0.3);
   --accent: #ff620a;
+  --danger: #de2f2f;
 }
 
 body {

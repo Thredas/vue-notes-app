@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
 
 const props = defineProps(['id', 'name', 'icon', 'isActive', 'isForm']);
 const notesStore = useNotesStore();
-const { setNoteFolders } = useNotesStore();
+const { setNoteFolders, deleteNoteFolder } = useNotesStore();
 
 const newFolderName = ref(null);
 const inputRef = ref(null);
@@ -26,17 +26,19 @@ const addToNoteFolders = () => {
     class="folders-menu__item"
     :class="{ active: isActive, 'no-hover': isForm }"
   >
-    <span
-      class="folders-item-icon material-symbols-rounded"
-      :class="{ outlined: !isActive }"
-    >
-      {{ icon ?? 'folder' }}
-    </span>
+    <div class="folders-menu__item__title_container">
+      <span
+        class="folders-item-icon material-symbols-rounded"
+        :class="{ outlined: !isActive }"
+      >
+        {{ icon ?? 'folder' }}
+      </span>
 
-    <span v-if="!isForm">{{ props.name }}</span>
+      <span v-show="!isForm">{{ props.name }}</span>
+    </div>
 
     <form
-      v-if="isForm"
+      v-show="isForm"
       class="folders-menu__item__form"
       @submit.prevent
       @submit="addToNoteFolders"
@@ -46,11 +48,16 @@ const addToNoteFolders = () => {
         v-model="newFolderName"
         @focusout="$emit('closeShallowNoteFolder')"
       />
-
-      <!--      <CustomButton class="folders-menu__item__form__button" type="submit">-->
-      <!--        <span class="material-symbols-rounded outlined">done</span>-->
-      <!--      </CustomButton>-->
     </form>
+
+    <CustomButton
+      v-show="!isForm && !icon"
+      class="folders-menu__item__form__button"
+      @click.stop
+      @click="deleteNoteFolder(id)"
+    >
+      <span class="material-symbols-rounded">delete</span>
+    </CustomButton>
   </div>
 </template>
 
@@ -59,15 +66,22 @@ const addToNoteFolders = () => {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   border-radius: 8px;
   padding: 8px 16px;
-  transition: 0.1s ease;
+  transition: 0.08s ease;
   color: var(--text-secondary);
 }
 
 .folders-menu__item:hover {
   background-color: var(--secondary);
+}
+
+.folders-menu__item__title_container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .folders-menu__item.active {
@@ -96,6 +110,16 @@ const addToNoteFolders = () => {
   min-width: 28px;
   height: 28px;
   padding: 4px;
+  opacity: 0;
+}
+
+.folders-menu__item__form__button:hover {
+  background-color: transparent !important;
+  color: var(--danger);
+}
+
+.folders-menu__item:hover .folders-menu__item__form__button {
+  opacity: 1;
 }
 
 .folders-menu__item__form__button:hover {

@@ -13,6 +13,7 @@ export default {
 
 <style scoped>
 .button {
+  position: relative;
   font-family: 'Golos Text', sans-serif;
   font-size: 14px;
   display: flex;

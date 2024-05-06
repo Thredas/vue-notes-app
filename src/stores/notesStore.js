@@ -18,7 +18,9 @@ export const useNotesStore = defineStore('notes', () => {
 
   // main setters
   const setIsLoading = (value) => (isLoading.value = value);
+
   const setNotes = (newNotes) => (notes.value = newNotes);
+
   const setCurrentNote = (id) => {
     if (!id) {
       currentOpenedNote.value = null;
@@ -32,6 +34,7 @@ export const useNotesStore = defineStore('notes', () => {
 
   // modal toggle options
   const toggleNoteForm = () => (showNoteForm.value = !showNoteForm.value);
+
   const toggleNoteInfo = () => (showNoteInfo.value = !showNoteInfo.value);
 
   // Actions with notes
@@ -40,6 +43,7 @@ export const useNotesStore = defineStore('notes', () => {
       id: nanoid(),
       title,
       text,
+      folders: [],
       createDate: Date.now(),
       updateDate: null,
     };
@@ -47,6 +51,7 @@ export const useNotesStore = defineStore('notes', () => {
     notes.value.push(newNote);
     localStorage.setItem('notes', JSON.stringify(notes.value));
   };
+
   const removeNote = (id) => {
     const deleteConfirmation = confirm(
       'Are you sure want to delete this note?'
@@ -64,6 +69,7 @@ export const useNotesStore = defineStore('notes', () => {
       }
     }
   };
+
   const editNote = (id, noteObj) => {
     const noteIdx = findNoteById(id);
 
@@ -83,10 +89,48 @@ export const useNotesStore = defineStore('notes', () => {
 
   // Actions with folders
   const setSelectedFolderId = (folderId) => (selectedFolderId.value = folderId);
+
   const setNoteFolders = (newNoteFolders) => {
     noteFolders.value = newNoteFolders;
     localStorage.setItem('noteFolders', JSON.stringify(noteFolders.value));
   };
+  const deleteNoteFolder = (folderId) => {
+    const deleteConfirmation = confirm(
+      'Are you sure want to delete this note folder?'
+    );
+
+    if (deleteConfirmation) {
+      const noteFolderIdx = noteFolders.value.findIndex(
+        (folder) => folder.id === folderId
+      );
+
+      if (noteFolderIdx !== -1) {
+        // delete folder from folders array
+        noteFolders.value.splice(noteFolderIdx, 1);
+
+        // delete folder from every note, that contained this folder
+        notes.value = notes.value.map((note) => {
+          if (!note.folders) return note;
+
+          const folderInNoteIdx = note.folders.findIndex(
+            (folderInNoteId) => folderInNoteId === folderId
+          );
+
+          if (folderInNoteIdx !== -1) {
+            note.folders.splice(folderInNoteIdx, 1);
+          }
+
+          return note;
+        });
+
+        localStorage.setItem('notes', JSON.stringify(notes.value));
+        localStorage.setItem('noteFolders', JSON.stringify(noteFolders.value));
+      } else {
+        alert("Can't delete a folder, that doesn't exist");
+      }
+    }
+  };
+
   const changeFoldersInNote = (noteId, newFolders) => {
     const noteIdx = findNoteById(noteId);
     const note = notes.value[noteIdx];
@@ -100,6 +144,7 @@ export const useNotesStore = defineStore('notes', () => {
       alert('Note with this ID was not found');
     }
   };
+
   const toggleIsNotePinned = (noteId) => {
     const noteIdx = findNoteById(noteId);
     const note = notes.value[noteIdx];
@@ -130,6 +175,7 @@ export const useNotesStore = defineStore('notes', () => {
     findNoteById,
     setSelectedFolderId,
     setNoteFolders,
+    deleteNoteFolder,
     changeFoldersInNote,
     toggleIsNotePinned,
   };
