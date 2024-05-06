@@ -1,24 +1,23 @@
-<script setup>
+<script lang="ts" setup>
 import { defineProps, ref, onMounted } from 'vue';
 import TextField from '@/components/ui/text-field.vue';
 import { useNotesStore } from '@/stores/notesStore';
-import { nanoid } from 'nanoid';
 
-const props = defineProps(['id', 'name', 'icon', 'isActive', 'isForm']);
-const notesStore = useNotesStore();
-const { setNoteFolders, deleteNoteFolder } = useNotesStore();
+type FolderMenuItemProps = {
+  id?: string;
+  name?: string;
+  icon?: string | null;
+  isActive?: boolean;
+  isForm?: boolean;
+};
+
+defineProps<FolderMenuItemProps>();
+const { addNoteFolder, deleteNoteFolder } = useNotesStore();
 
 const newFolderName = ref(null);
-const inputRef = ref(null);
+const inputRef = ref<HTMLInputElement | null>(null);
 
 onMounted(() => inputRef.value && inputRef.value.focus());
-
-const addToNoteFolders = () => {
-  setNoteFolders([
-    ...notesStore.noteFolders,
-    { id: nanoid(), name: newFolderName.value },
-  ]);
-};
 </script>
 
 <template>
@@ -34,14 +33,14 @@ const addToNoteFolders = () => {
         {{ icon ?? 'folder' }}
       </span>
 
-      <span v-show="!isForm">{{ props.name }}</span>
+      <span v-show="!isForm">{{ name }}</span>
     </div>
 
     <form
       v-show="isForm"
       class="folders-menu__item__form"
       @submit.prevent
-      @submit="addToNoteFolders"
+      @submit="addNoteFolder(newFolderName as string)"
     >
       <TextField
         ref="inputRef"
@@ -54,7 +53,7 @@ const addToNoteFolders = () => {
       v-show="!isForm && !icon"
       class="folders-menu__item__form__button"
       @click.stop
-      @click="deleteNoteFolder(id)"
+      @click="deleteNoteFolder(id as string)"
     >
       <span class="material-symbols-rounded">delete</span>
     </CustomButton>

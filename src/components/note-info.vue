@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import {
   Listbox,
   ListboxButton,
@@ -22,10 +22,12 @@ const {
   changeFoldersInNote,
 } = notesStore;
 
-const selectedFolders = ref(currentOpenedNote.value.folders ?? []);
+const selectedFolders = ref<string[]>(currentOpenedNote.value?.folders ?? []);
 
 watch(selectedFolders, () => {
-  changeFoldersInNote(currentOpenedNote.value.id, selectedFolders);
+  if (currentOpenedNote.value) {
+    changeFoldersInNote(currentOpenedNote.value.id, selectedFolders.value);
+  }
 });
 
 const switchToEditMode = () => {
@@ -43,7 +45,7 @@ const closeModal = () => {
   <ModalWindow class="note-info__modal" :close-modal-func="closeModal">
     <div id="note-info" class="note-info">
       <div class="note-info__header">
-        <span class="note-info__title">{{ currentOpenedNote.title }}</span>
+        <span class="note-info__title">{{ currentOpenedNote?.title }}</span>
 
         <div class="note-info__header_buttons">
           <CustomButton class="note-info__header_button" @click="closeModal">
@@ -54,12 +56,12 @@ const closeModal = () => {
 
       <div class="note-info__text">
         <quill-editor
-          :content="currentOpenedNote.text"
+          :content="currentOpenedNote?.text"
           read-only
           content-type="html"
           theme=""
           :placeholder="
-            !currentOpenedNote.text ? 'There`s nothing here yet' : null
+            !currentOpenedNote?.text ? 'There`s nothing here yet' : null
           "
         >
         </quill-editor>
@@ -101,8 +103,12 @@ const closeModal = () => {
               {{
                 selectedFolders
                   .map((folderId) => {
-                    return noteFolders.find((folder) => folder.id === folderId)
-                      ?.name;
+                    // some strange bug in webstorm
+                    // @ts-ignore
+                    const folder = noteFolders.find(
+                      (folder) => folder.id === folderId
+                    );
+                    return folder?.name;
                   })
                   .join(', ')
               }}
@@ -124,7 +130,7 @@ const closeModal = () => {
 
           <CustomButton
             class="note-info__header_button"
-            @click="removeNote(currentOpenedNote.id)"
+            @click="removeNote(currentOpenedNote?.id ?? '')"
           >
             <span class="material-symbols-rounded">delete</span>
           </CustomButton>

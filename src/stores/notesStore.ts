@@ -2,35 +2,40 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { nanoid } from 'nanoid';
 
+import { Note, NoteFolder } from '@/types';
+
 export const useNotesStore = defineStore('notes', () => {
-  const isLoading = ref(true);
+  const isLoading = ref<boolean>(true);
 
-  const notes = ref([]);
-  const showNoteForm = ref(false);
-  const currentOpenedNote = ref(null);
-  const showNoteInfo = ref(false);
+  const notes = ref<Note[]>([]);
+  const currentOpenedNote = ref<Note | null>(null);
+  const showNoteForm = ref<boolean>(false);
+  const showNoteInfo = ref<boolean>(false);
 
-  const PINNED_FOLDER_ID = ref('pinned_folder_id');
-  const noteFolders = ref([]);
-  const selectedFolderId = ref(null);
+  const PINNED_FOLDER_ID = ref<'pinned_folder_id'>('pinned_folder_id');
+  const noteFolders = ref<NoteFolder[]>([]);
+  const selectedFolderId = ref<string | null>(null);
 
-  const searchQuery = ref('');
+  const searchQuery = ref<string>('');
 
   // main setters
-  const setIsLoading = (value) => (isLoading.value = value);
+  const setIsLoading = (value: boolean) => (isLoading.value = value);
 
-  const setNotes = (newNotes) => (notes.value = newNotes);
+  const setNotes = (newNotes: Note[]) => (notes.value = newNotes);
 
-  const setCurrentNote = (id) => {
+  const setCurrentNote = (id: string | null) => {
     if (!id) {
       currentOpenedNote.value = null;
       return;
     }
 
-    currentOpenedNote.value = notes.value.find((note) => note.id === id);
+    currentOpenedNote.value =
+      notes.value.find((note) => note.id === id) ?? null;
   };
 
-  const findNoteById = (id) => notes.value.findIndex((note) => note.id === id);
+  const findNoteById = (id: string) => {
+    return notes.value.findIndex((note) => note.id === id);
+  };
 
   // modal toggle options
   const toggleNoteForm = () => (showNoteForm.value = !showNoteForm.value);
@@ -38,11 +43,12 @@ export const useNotesStore = defineStore('notes', () => {
   const toggleNoteInfo = () => (showNoteInfo.value = !showNoteInfo.value);
 
   // Actions with notes
-  const addNote = (title, text) => {
-    const newNote = {
+  const addNote = (title: string, text: string) => {
+    const newNote: Note = {
       id: nanoid(),
       title,
       text,
+      isPinned: false,
       folders: [],
       createDate: Date.now(),
       updateDate: null,
@@ -52,7 +58,7 @@ export const useNotesStore = defineStore('notes', () => {
     localStorage.setItem('notes', JSON.stringify(notes.value));
   };
 
-  const removeNote = (id) => {
+  const removeNote = (id: string) => {
     const deleteConfirmation = confirm(
       'Are you sure want to delete this note?'
     );
@@ -70,7 +76,7 @@ export const useNotesStore = defineStore('notes', () => {
     }
   };
 
-  const editNote = (id, noteObj) => {
+  const editNote = (id: string, noteObj: Note) => {
     const noteIdx = findNoteById(id);
 
     if (noteIdx !== -1) {
@@ -88,13 +94,19 @@ export const useNotesStore = defineStore('notes', () => {
   };
 
   // Actions with folders
-  const setSelectedFolderId = (folderId) => (selectedFolderId.value = folderId);
-
-  const setNoteFolders = (newNoteFolders) => {
-    noteFolders.value = newNoteFolders;
-    localStorage.setItem('noteFolders', JSON.stringify(noteFolders.value));
+  const setNoteFolders = (newFolders: NoteFolder[]) => {
+    noteFolders.value = newFolders;
   };
-  const deleteNoteFolder = (folderId) => {
+
+  const setSelectedFolderId = (folderId: string | null) => {
+    selectedFolderId.value = folderId;
+  };
+
+  const addNoteFolder = (newFolderName: string) => {
+    noteFolders.value.push({ id: nanoid(), name: newFolderName });
+  };
+
+  const deleteNoteFolder = (folderId: string) => {
     const deleteConfirmation = confirm(
       'Are you sure want to delete this note folder?'
     );
@@ -131,7 +143,7 @@ export const useNotesStore = defineStore('notes', () => {
     }
   };
 
-  const changeFoldersInNote = (noteId, newFolders) => {
+  const changeFoldersInNote = (noteId: string, newFolders: string[]) => {
     const noteIdx = findNoteById(noteId);
     const note = notes.value[noteIdx];
 
@@ -145,7 +157,7 @@ export const useNotesStore = defineStore('notes', () => {
     }
   };
 
-  const toggleIsNotePinned = (noteId) => {
+  const toggleIsNotePinned = (noteId: string) => {
     const noteIdx = findNoteById(noteId);
     const note = notes.value[noteIdx];
 
@@ -173,8 +185,9 @@ export const useNotesStore = defineStore('notes', () => {
     removeNote,
     setCurrentNote,
     findNoteById,
-    setSelectedFolderId,
     setNoteFolders,
+    setSelectedFolderId,
+    addNoteFolder,
     deleteNoteFolder,
     changeFoldersInNote,
     toggleIsNotePinned,

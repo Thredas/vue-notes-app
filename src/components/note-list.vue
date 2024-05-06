@@ -1,8 +1,9 @@
-<script setup>
-import NoteListItem from '@/components/note-list-item.vue';
+<script lang="ts" setup>
 import { useNotesStore } from '@/stores/notesStore';
 import { computed, ref, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
+
+import NoteListItem from '@/components/note-list-item.vue';
 
 const notesStore = useNotesStore();
 const { notes, selectedFolderId, searchQuery, PINNED_FOLDER_ID } =
@@ -14,8 +15,15 @@ const notesFilteredBySearchQuery = ref(notesFilteredByFolder.value);
 const pinnedNotes = computed(() =>
   notesFilteredBySearchQuery.value
     .filter((arrNote) => arrNote.isPinned)
-    .sort((a, b) => b.updateDate - a.updateDate)
+    .sort((a, b) => {
+      if (a.updateDate && b.updateDate) {
+        return b.updateDate - a.updateDate;
+      } else {
+        return -1;
+      }
+    })
 );
+
 const notPinnedNotes = computed(() =>
   notesFilteredBySearchQuery.value
     .filter((arrNote) => !arrNote.isPinned)
@@ -27,12 +35,13 @@ watchEffect(() => {
     notesFilteredByFolder.value = notes.value.filter((note) => note.isPinned);
   } else if (selectedFolderId.value) {
     notesFilteredByFolder.value = notes.value.filter((note) => {
-      return note.folders?.includes(selectedFolderId.value);
+      return note.folders?.includes(selectedFolderId.value!);
     });
   } else {
     notesFilteredByFolder.value = notes.value;
   }
 
+  // Search logic
   if (searchQuery.value) {
     const formattedSearchQuery = searchQuery.value.toLowerCase().trim();
 

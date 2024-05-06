@@ -1,25 +1,30 @@
-<script setup>
+<script lang="ts" setup>
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 import { onMounted, onUnmounted, ref } from 'vue';
 import { QuillEditor } from '@vueup/vue-quill';
 import { useNotesStore } from '@/stores/notesStore';
-import ModalWindow from '@/components/ui/modal-window.vue';
 import { storeToRefs } from 'pinia';
+import { Note } from '@/types';
+
+import ModalWindow from '@/components/ui/modal-window.vue';
 
 const notesStore = useNotesStore();
 const { addNote, editNote, toggleNoteForm, toggleNoteInfo, setCurrentNote } =
   notesStore;
 const { currentOpenedNote } = storeToRefs(notesStore);
 
-const noteTitle = ref(currentOpenedNote?.value?.title);
-const noteText = ref(currentOpenedNote?.value?.text);
+const noteTitle = ref<string | undefined>(currentOpenedNote?.value?.title);
+const noteText = ref<string | undefined>(currentOpenedNote?.value?.text);
 
 const mobileKeyboardY = ref('100%');
 
-const mobileKeyboardWatcher = (event) => {
-  if (event.target.height + 30 < document.scrollingElement.clientHeight) {
-    mobileKeyboardY.value = event.target.height - 155 + 'px';
+const mobileKeyboardWatcher = (event: Event) => {
+  const target = event.target as VisualViewport;
+  const scrollingElement = document.scrollingElement!;
+
+  if (target.height + 30 < scrollingElement.clientHeight) {
+    mobileKeyboardY.value = target.height - 155 + 'px';
   } else {
     mobileKeyboardY.value = '100%';
   }
@@ -38,8 +43,8 @@ onUnmounted(() => {
 });
 
 const closeForm = () => {
-  noteTitle.value = null;
-  noteText.value = null;
+  noteTitle.value = undefined;
+  noteText.value = undefined;
   setCurrentNote(null);
   toggleNoteForm();
 };
@@ -59,15 +64,15 @@ const sendFormData = () => {
     editNote(currentOpenedNote.value.id, {
       title: noteTitle.value,
       text: noteText.value,
-    });
+    } as Note);
     goBackToNoteInfo();
   } else {
-    addNote(noteTitle.value, noteText.value);
+    addNote(noteTitle.value!, noteText.value!);
     closeForm();
   }
 
-  noteTitle.value = null;
-  noteText.value = null;
+  noteTitle.value = undefined;
+  noteText.value = undefined;
 };
 </script>
 

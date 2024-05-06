@@ -1,11 +1,13 @@
-<script setup>
+<script lang="ts" setup>
 import { defineOptions, defineProps } from 'vue';
 
-defineOptions({
-  inheritAttrs: false,
-});
+type ModalWindowProps = {
+  isOpen: boolean;
+  closeModalFunc: () => void;
+};
 
-defineProps(['isOpen', 'closeModalFunc']);
+defineOptions({ inheritAttrs: false });
+defineProps<ModalWindowProps>();
 </script>
 
 <template>

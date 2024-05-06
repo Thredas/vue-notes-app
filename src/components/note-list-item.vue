@@ -1,7 +1,14 @@
-<script setup>
+<script lang="ts" setup>
 import { defineProps } from 'vue';
 import { QuillEditor } from '@vueup/vue-quill';
 import { useNotesStore } from '@/stores/notesStore';
+import { Note } from '@/types';
+
+type NoteListItemProps = {
+  note: Note;
+};
+
+const props = defineProps<NoteListItemProps>();
 
 const notesStore = useNotesStore();
 const { setCurrentNote, toggleNoteInfo, toggleIsNotePinned } = notesStore;
@@ -10,24 +17,22 @@ const openNoteInfo = () => {
   setCurrentNote(props.note.id);
   toggleNoteInfo();
 };
-
-const props = defineProps(['note']);
 </script>
 
 <template>
   <button class="note-item" @click="openNoteInfo">
     <span class="note-item__title">
-      <span class="note-item__title_text">{{ props.note.title }}</span>
+      <span class="note-item__title_text">{{ note.title }}</span>
 
       <span class="note-item__buttons">
         <CustomButton
           class="note-item__button"
           @click.stop
-          @click="toggleIsNotePinned(props.note.id)"
+          @click="toggleIsNotePinned(note.id)"
         >
           <span
             class="material-symbols-rounded"
-            :class="{ outlined: !props.note.isPinned }"
+            :class="{ outlined: !note.isPinned }"
           >
             keep
           </span>
@@ -40,12 +45,7 @@ const props = defineProps(['note']);
     </span>
 
     <span class="note-item__text-container">
-      <quill-editor
-        :content="props.note.text"
-        content-type="html"
-        theme=""
-        read-only
-      >
+      <quill-editor :content="note.text" content-type="html" theme="" read-only>
       </quill-editor>
     </span>
   </button>

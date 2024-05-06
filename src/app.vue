@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { onMounted, watch } from 'vue';
 
 import AppHeader from '@/components/app-header.vue';
@@ -17,13 +17,17 @@ const { setIsLoading, setNotes, setNoteFolders, toggleNoteForm } = notesStore;
 
 onMounted(async () => {
   const savedNotesLocalStorage = localStorage.getItem('notes');
-  const parsedNotes = await JSON.parse(savedNotesLocalStorage);
-
   const savedFoldersFromLocalStorage = localStorage.getItem('noteFolders');
-  const parsedFolders = await JSON.parse(savedFoldersFromLocalStorage);
 
-  if (parsedNotes) setNotes([...parsedNotes]);
-  if (parsedFolders) setNoteFolders([...parsedFolders]);
+  if (savedNotesLocalStorage) {
+    const parsedNotes = await JSON.parse(savedNotesLocalStorage);
+    setNotes([...parsedNotes]);
+  }
+
+  if (savedFoldersFromLocalStorage) {
+    const parsedFolders = await JSON.parse(savedFoldersFromLocalStorage);
+    setNoteFolders([...parsedFolders]);
+  }
 
   setIsLoading(false);
 });

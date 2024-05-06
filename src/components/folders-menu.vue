@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { useNotesStore } from '@/stores/notesStore';
 import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';
