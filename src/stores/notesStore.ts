@@ -163,7 +163,7 @@ export const useNotesStore = defineStore('notes', () => {
 
     if (note.isPinned === undefined) note.isPinned = false;
 
-    editNote(noteId, { ...notes.value[noteIdx], isPinned: !note.isPinned });
+    note.isPinned = !note.isPinned;
   };
 
   return {

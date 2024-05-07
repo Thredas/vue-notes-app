@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
 import { QuillEditor } from '@vueup/vue-quill';
 import { useNotesStore } from '@/stores/notesStore';
+import { useListAnimationStore } from '@/stores/listAnimationStore';
 import { Note } from '@/types';
+import { storeToRefs } from 'pinia';
 
 type NoteListItemProps = {
   note: Note;
@@ -11,16 +13,31 @@ type NoteListItemProps = {
 const props = defineProps<NoteListItemProps>();
 
 const notesStore = useNotesStore();
+const { currentOpenedNote } = storeToRefs(notesStore);
 const { setCurrentNote, toggleNoteInfo, toggleIsNotePinned } = notesStore;
+
+const animStore = useListAnimationStore();
+const { setStartAnimInfo } = animStore;
+
+const noteListItemRef = ref<HTMLDivElement | null>(null);
 
 const openNoteInfo = () => {
   setCurrentNote(props.note.id);
   toggleNoteInfo();
+
+  if (noteListItemRef.value) {
+    setStartAnimInfo(noteListItemRef.value.getBoundingClientRect());
+  }
 };
 </script>
 
 <template>
-  <button class="note-item" @click="openNoteInfo">
+  <button
+    class="note-item"
+    :class="{ fading: note.id === currentOpenedNote?.id }"
+    @click="openNoteInfo"
+    ref="noteListItemRef"
+  >
     <span class="note-item__title">
       <span class="note-item__title_text">{{ note.title }}</span>
 
@@ -68,14 +85,22 @@ const openNoteInfo = () => {
   border-radius: 24px;
   border: 2px rgba(17, 17, 17, 0.1) solid;
   background-color: var(--item-background);
-  //cursor: pointer;
-  transition: 0.15s ease;
+  transition: opacity 0.5s, border 0.15s, box-shadow 0.15s;
   overflow: hidden;
 }
 
 .note-item:hover {
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
   border: 2px #2563eb solid;
+}
+
+.note-item:hover {
+  transition: 0.15s;
+}
+
+.note-item.fading {
+  transition: opacity 0.15s ease-out !important;
+  opacity: 0;
 }
 
 .note-item__title {

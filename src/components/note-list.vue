@@ -77,16 +77,24 @@ watchEffect(() => {
       </span>
 
       <div class="note-list__pinned">
-        <NoteListItem v-for="note in pinnedNotes" :key="note.id" :note="note" />
+        <TransitionGroup name="list">
+          <NoteListItem
+            v-for="note in pinnedNotes"
+            :key="note.id"
+            :note="note"
+          />
+        </TransitionGroup>
       </div>
     </div>
 
     <div class="note-list">
-      <NoteListItem
-        v-for="note in notPinnedNotes"
-        :key="note.id"
-        :note="note"
-      />
+      <TransitionGroup name="list">
+        <NoteListItem
+          v-for="note in notPinnedNotes"
+          :key="note.id"
+          :note="note"
+        />
+      </TransitionGroup>
     </div>
   </div>
 
@@ -100,6 +108,7 @@ watchEffect(() => {
 
 <style scoped>
 .note-list {
+  position: relative;
   box-sizing: border-box;
   width: 100%;
   display: flex;
@@ -123,6 +132,7 @@ watchEffect(() => {
 }
 
 .note-list__pinned {
+  position: relative;
   box-sizing: border-box;
   width: 100%;
   display: flex;
@@ -142,6 +152,21 @@ watchEffect(() => {
   gap: 8px;
   margin: 24px 0 0 8px;
   color: var(--text-secondary);
+}
+
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.2s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+}
+
+.list-leave-active {
+  position: absolute;
 }
 
 @media (max-width: 1200px) {

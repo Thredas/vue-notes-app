@@ -48,8 +48,8 @@ watch([showNoteInfo, showNoteForm], (currentValues) => {
     <div v-if="!isLoading" class="app-container">
       <FoldersMenu />
       <NoteList />
-      <NoteInfo v-if="showNoteInfo" />
-      <NoteForm v-if="showNoteForm" />
+      <NoteInfo :isOpen="showNoteInfo" />
+      <NoteForm :isOpen="showNoteForm" />
 
       <CustomButton class="add-note-fab" @click="toggleNoteForm">
         <span class="material-symbols-rounded">note_stack_add</span>
@@ -104,6 +104,13 @@ watch([showNoteInfo, showNoteForm], (currentValues) => {
 @media (max-width: 1200px) {
   .app-container {
     display: block;
+  }
+}
+
+@media (max-width: 600px) {
+  .add-note-fab {
+    bottom: 16px;
+    right: 16px;
   }
 }
 </style>

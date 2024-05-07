@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { defineOptions, defineProps } from 'vue';
+import { computed, defineOptions, defineProps } from 'vue';
+import { useListAnimationStore } from '@/stores/listAnimationStore';
+import { storeToRefs } from 'pinia';
 
 type ModalWindowProps = {
   isOpen: boolean;
@@ -7,15 +9,52 @@ type ModalWindowProps = {
 };
 
 defineOptions({ inheritAttrs: false });
-defineProps<ModalWindowProps>();
+const props = defineProps<ModalWindowProps>();
+
+const animStore = useListAnimationStore();
+const { startAnimInfo } = storeToRefs(animStore);
+const { setStartAnimInfo } = animStore;
+
+const startAnimX = computed(() => {
+  if (startAnimInfo.value) {
+    const { left, width } = startAnimInfo.value;
+    return `${left - window.innerWidth / 2 + width / 2}px`;
+  } else {
+    return '0px';
+  }
+});
+
+const startAnimY = computed(() => {
+  if (startAnimInfo.value) {
+    const { top, height } = startAnimInfo.value;
+    return `${top - window.innerHeight / 2 + height / 2}px`;
+  } else {
+    return '0px';
+  }
+});
+
+const startAnimWidth = computed(() =>
+  startAnimInfo.value ? startAnimInfo.value.width / 740 : '0'
+);
+
+const startAnimHeight = computed(() =>
+  startAnimInfo.value ? startAnimInfo.value.height / 900 : '0'
+);
+
+const closeModal = () => {
+  setStartAnimInfo(null);
+  props.closeModalFunc();
+};
 </script>
 
 <template>
-  <div class="modal-window__container" @click="closeModalFunc">
-    <div class="modal-window" :class="$attrs.class" @click.stop>
-      <slot></slot>
+  <Transition>
+    <div v-if="isOpen" class="modal-window__container" @click="closeModal">
+      <div class="modal-window" :class="$attrs.class" @click.stop>
+        <slot></slot>
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style scoped>
@@ -27,6 +66,37 @@ defineProps<ModalWindowProps>();
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
+.v-enter-active .modal-window {
+  animation: bounce-in 0.2s both ease-in;
+}
+
+.v-leave-active .modal-window {
+  animation: 0.14s ease-in-out reverse forwards bounce-in;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: translate(v-bind(startAnimX), v-bind(startAnimY))
+      scaleX(v-bind(startAnimWidth)) scaleY(v-bind(startAnimHeight));
+  }
+  50% {
+    transform: translate(0, 0) scale(1.01);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
 }
 
 .modal-window {

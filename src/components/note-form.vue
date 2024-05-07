@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { QuillEditor } from '@vueup/vue-quill';
 import { useNotesStore } from '@/stores/notesStore';
 import { storeToRefs } from 'pinia';
@@ -14,10 +14,15 @@ const { addNote, editNote, toggleNoteForm, toggleNoteInfo, setCurrentNote } =
   notesStore;
 const { currentOpenedNote } = storeToRefs(notesStore);
 
-const noteTitle = ref<string | undefined>(currentOpenedNote?.value?.title);
-const noteText = ref<string | undefined>(currentOpenedNote?.value?.text);
+const noteTitle = ref<string | undefined>(undefined);
+const noteText = ref<string | undefined>(undefined);
 
 const mobileKeyboardY = ref('100%');
+
+watch(currentOpenedNote, () => {
+  noteTitle.value = currentOpenedNote?.value?.title;
+  noteText.value = currentOpenedNote.value?.text;
+});
 
 const mobileKeyboardWatcher = (event: Event) => {
   const target = event.target as VisualViewport;
@@ -84,6 +89,7 @@ const sendFormData = () => {
           v-if="!!currentOpenedNote"
           class="title-button"
           @click="goBackToNoteInfo"
+          type="button"
         >
           <span class="material-symbols-rounded">arrow_back</span>
         </CustomButton>
@@ -99,6 +105,7 @@ const sendFormData = () => {
           v-if="!currentOpenedNote"
           class="title-button"
           @click="closeForm"
+          type="button"
         >
           <span class="material-symbols-rounded">close</span>
         </CustomButton>
