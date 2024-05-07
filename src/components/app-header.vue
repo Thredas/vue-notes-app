@@ -92,6 +92,14 @@ header {
   width: 350px !important;
   font-size: 16px;
   border-radius: 32px !important;
+  background-color: var(--secondary);
+  color: var(--text-secondary);
+  transition: 0.1s;
+  border: 0 !important;
+}
+
+.header__search-input:focus {
+  background-color: var(--item-background) !important;
 }
 
 .header__create-button {

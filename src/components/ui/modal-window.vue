@@ -79,7 +79,7 @@ const closeModal = () => {
 }
 
 .v-enter-active .modal-window {
-  animation: bounce-in 0.2s both ease-in;
+  animation: bounce-in 0.15s both ease-in;
 }
 
 .v-leave-active .modal-window {
@@ -92,7 +92,7 @@ const closeModal = () => {
       scaleX(v-bind(startAnimWidth)) scaleY(v-bind(startAnimHeight));
   }
   50% {
-    transform: translate(0, 0) scale(1.01);
+    transform: translate(0, 0) scale(1.02);
   }
   100% {
     transform: translate(0, 0) scale(1);

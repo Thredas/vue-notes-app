@@ -42,7 +42,7 @@ export default {
   display: flex;
   align-items: center;
   width: 100%;
-  border: 1px rgba(185, 185, 185, 0.5) solid !important;
+  border: 1px rgba(185, 185, 185, 0.5) solid;
   border-radius: 8px;
 }
 

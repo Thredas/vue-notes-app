@@ -164,6 +164,9 @@ export const useNotesStore = defineStore('notes', () => {
     if (note.isPinned === undefined) note.isPinned = false;
 
     note.isPinned = !note.isPinned;
+    note.updateDate = Date.now();
+
+    localStorage.setItem('notes', JSON.stringify(notes.value));
   };
 
   return {
