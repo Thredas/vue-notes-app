@@ -85,7 +85,8 @@ const openNoteInfo = () => {
   border-radius: 24px;
   border: 2px rgba(17, 17, 17, 0.1) solid;
   background-color: var(--item-background);
-  transition: opacity 0.5s, border 0.15s, box-shadow 0.15s;
+  transition: opacity 0.25s, border 0.15s, box-shadow 0.15s;
+  transition-delay: 130ms;
   overflow: hidden;
 }
 

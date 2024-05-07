@@ -34,11 +34,11 @@ const startAnimY = computed(() => {
 });
 
 const startAnimWidth = computed(() =>
-  startAnimInfo.value ? startAnimInfo.value.width / 740 : '0'
+  startAnimInfo.value ? startAnimInfo.value.width / 700 : '0'
 );
 
 const startAnimHeight = computed(() =>
-  startAnimInfo.value ? startAnimInfo.value.height / 900 : '0'
+  startAnimInfo.value ? startAnimInfo.value.height / 960 : '0'
 );
 
 const closeModal = () => {
@@ -76,14 +76,16 @@ const closeModal = () => {
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+  transition-delay: 0.1s;
 }
 
 .v-enter-active .modal-window {
-  animation: bounce-in 0.15s both ease-in;
+  animation: bounce-in 0.2s both cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
 
 .v-leave-active .modal-window {
-  animation: 0.14s ease-in-out reverse forwards bounce-in;
+  animation: 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67) reverse forwards
+    bounce-in;
 }
 
 @keyframes bounce-in {
@@ -92,7 +94,7 @@ const closeModal = () => {
       scaleX(v-bind(startAnimWidth)) scaleY(v-bind(startAnimHeight));
   }
   50% {
-    transform: translate(0, 0) scale(1.02);
+    transform: translate(0, 0) scale(1.023);
   }
   100% {
     transform: translate(0, 0) scale(1);
