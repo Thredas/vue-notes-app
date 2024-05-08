@@ -87,7 +87,6 @@ export const useNotesStore = defineStore('notes', () => {
       };
 
       localStorage.setItem('notes', JSON.stringify(notes.value));
-      setCurrentNote(id);
     } else {
       alert("Can't edit a note, that doesn't exist");
     }
@@ -104,6 +103,7 @@ export const useNotesStore = defineStore('notes', () => {
 
   const addNoteFolder = (newFolderName: string) => {
     noteFolders.value.push({ id: nanoid(), name: newFolderName });
+    localStorage.setItem('noteFolders', JSON.stringify(noteFolders.value));
   };
 
   const deleteNoteFolder = (folderId: string) => {
@@ -150,8 +150,7 @@ export const useNotesStore = defineStore('notes', () => {
     if (note) {
       if (!note.folders) note.folders = [];
       note.folders = newFolders;
-
-      editNote(noteId, note);
+      localStorage.setItem('notes', JSON.stringify(notes.value));
     } else {
       alert('Note with this ID was not found');
     }

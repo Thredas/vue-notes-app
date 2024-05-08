@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineProps, ref, onMounted } from 'vue';
-import TextField from '@/components/ui/text-field.vue';
 import { useNotesStore } from '@/stores/notesStore';
+import { TextField, CustomButton } from '@/components/ui';
 
 type FolderMenuItemProps = {
   id?: string;

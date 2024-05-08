@@ -62,12 +62,11 @@
   font-family: 'Golos Text', sans-serif !important;
   border: 1px rgba(185, 185, 185, 0.5) solid !important;
   border-radius: 8px;
+  overflow-y: auto;
 }
 
 .ql-editor {
   padding: 8px 16px 8px 8px !important;
-  max-height: 70svh;
-  min-height: 800px !important;
   overflow-x: hidden;
 }
 

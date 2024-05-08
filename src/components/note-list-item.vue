@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { defineProps, ref } from 'vue';
-import { QuillEditor } from '@vueup/vue-quill';
 import { useNotesStore } from '@/stores/notesStore';
 import { useListAnimationStore } from '@/stores/listAnimationStore';
-import { Note } from '@/types';
 import { storeToRefs } from 'pinia';
+import { Note } from '@/types';
+import { CustomButton } from '@/components/ui';
+import { QuillEditor } from '@vueup/vue-quill';
 
 type NoteListItemProps = {
   note: Note;
@@ -22,8 +23,8 @@ const { setStartAnimInfo } = animStore;
 const noteListItemRef = ref<HTMLDivElement | null>(null);
 
 const openNoteInfo = () => {
-  setCurrentNote(props.note.id);
   toggleNoteInfo();
+  setCurrentNote(props.note.id);
 
   if (noteListItemRef.value) {
     setStartAnimInfo(noteListItemRef.value.getBoundingClientRect());
@@ -85,9 +86,10 @@ const openNoteInfo = () => {
   border-radius: 24px;
   border: 2px rgba(17, 17, 17, 0.1) solid;
   background-color: var(--item-background);
-  transition: opacity 0.25s, border 0.15s, box-shadow 0.15s;
-  transition-delay: 130ms;
+  transition: all 100ms, opacity 50ms;
+  transition-delay: 0ms, 100ms;
   overflow: hidden;
+  cursor: default;
 }
 
 .note-item:hover {

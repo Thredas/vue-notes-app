@@ -2,6 +2,8 @@
 import { useNotesStore } from '@/stores/notesStore';
 import { storeToRefs } from 'pinia';
 
+import { TextField, CustomButton } from '@/components/ui';
+
 const notesStore = useNotesStore();
 const { searchQuery } = storeToRefs(notesStore);
 const { toggleNoteForm } = notesStore;

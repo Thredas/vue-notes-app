@@ -1,18 +1,16 @@
 <script lang="ts" setup>
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { QuillEditor } from '@vueup/vue-quill';
 import { useNotesStore } from '@/stores/notesStore';
 import { storeToRefs } from 'pinia';
 import { Note } from '@/types';
-
-import ModalWindow from '@/components/ui/modal-window.vue';
+import { TextField, ModalWindow, CustomButton } from '@/components/ui';
+import { QuillEditor } from '@vueup/vue-quill';
 
 const notesStore = useNotesStore();
 const { addNote, editNote, toggleNoteForm, toggleNoteInfo, setCurrentNote } =
   notesStore;
-const { currentOpenedNote } = storeToRefs(notesStore);
+const { currentOpenedNote, showNoteForm } = storeToRefs(notesStore);
 
 const noteTitle = ref<string | undefined>(undefined);
 const noteText = ref<string | undefined>(undefined);
@@ -82,7 +80,7 @@ const sendFormData = () => {
 </script>
 
 <template>
-  <ModalWindow :close-modal-func="closeForm">
+  <ModalWindow :isOpen="showNoteForm" :close-modal-func="closeForm">
     <form class="note-form" @submit.prevent @submit="sendFormData">
       <div class="note-form-title-container">
         <CustomButton
@@ -137,9 +135,12 @@ const sendFormData = () => {
 
 <style>
 .note-form {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  height: 100%;
+  padding: 24px;
 }
 
 .note-form-title-container {
@@ -171,6 +172,8 @@ const sendFormData = () => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
+  max-height: calc(100% - 92px);
 }
 
 .form-button {
@@ -192,6 +195,7 @@ const sendFormData = () => {
     box-sizing: border-box;
     min-height: 100%;
     padding: 8px;
+    height: auto;
   }
 
   .form-title {
@@ -209,7 +213,6 @@ const sendFormData = () => {
   .note-form__textarea {
     justify-content: start;
     flex-direction: column-reverse;
-    flex: 1;
     max-height: calc(100svh - 130px);
   }
 

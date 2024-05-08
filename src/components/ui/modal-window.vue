@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, defineOptions, defineProps } from 'vue';
+import { computed, defineOptions, defineProps, ref } from 'vue';
 import { useListAnimationStore } from '@/stores/listAnimationStore';
 import { storeToRefs } from 'pinia';
 
@@ -14,6 +14,8 @@ const props = defineProps<ModalWindowProps>();
 const animStore = useListAnimationStore();
 const { startAnimInfo } = storeToRefs(animStore);
 const { setStartAnimInfo } = animStore;
+
+const modalWindowRef = ref<HTMLDivElement | null>(null);
 
 const startAnimX = computed(() => {
   if (startAnimInfo.value) {
@@ -33,13 +35,21 @@ const startAnimY = computed(() => {
   }
 });
 
-const startAnimWidth = computed(() =>
-  startAnimInfo.value ? startAnimInfo.value.width / 700 : '0'
-);
+const startAnimScaleX = computed(() => {
+  if (!startAnimInfo.value || !modalWindowRef.value) return '0';
 
-const startAnimHeight = computed(() =>
-  startAnimInfo.value ? startAnimInfo.value.height / 960 : '0'
-);
+  const startAnimWidth = startAnimInfo.value.width;
+  const { width } = modalWindowRef.value.getBoundingClientRect();
+  return (startAnimWidth / width).toFixed(2);
+});
+
+const startAnimScaleY = computed(() => {
+  if (!startAnimInfo.value || !modalWindowRef.value) return '0';
+
+  const startAnimHeight = startAnimInfo.value.height;
+  const { height } = modalWindowRef.value.getBoundingClientRect();
+  return (startAnimHeight / height).toFixed(2);
+});
 
 const closeModal = () => {
   setStartAnimInfo(null);
@@ -50,7 +60,12 @@ const closeModal = () => {
 <template>
   <Transition>
     <div v-if="isOpen" class="modal-window__container" @click="closeModal">
-      <div class="modal-window" :class="$attrs.class" @click.stop>
+      <div
+        ref="modalWindowRef"
+        class="modal-window"
+        :class="$attrs.class"
+        @click.stop
+      >
         <slot></slot>
       </div>
     </div>
@@ -80,21 +95,21 @@ const closeModal = () => {
 }
 
 .v-enter-active .modal-window {
-  animation: bounce-in 0.2s both cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  animation: bounce-in 0.12s both cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
 
 .v-leave-active .modal-window {
-  animation: 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67) reverse forwards
+  animation: 0.12s cubic-bezier(0.17, 0.67, 0.83, 0.67) reverse forwards
     bounce-in;
 }
 
 @keyframes bounce-in {
   0% {
     transform: translate(v-bind(startAnimX), v-bind(startAnimY))
-      scaleX(v-bind(startAnimWidth)) scaleY(v-bind(startAnimHeight));
+      scaleX(v-bind(startAnimScaleX)) scaleY(v-bind(startAnimScaleY));
   }
-  50% {
-    transform: translate(0, 0) scale(1.023);
+  75% {
+    transform: translate(0, 0) scale(1.013);
   }
   100% {
     transform: translate(0, 0) scale(1);
@@ -105,20 +120,25 @@ const closeModal = () => {
   position: static;
   box-sizing: border-box;
   width: 700px;
-  padding: 24px;
+  height: calc(100svh - 15%);
   background-color: var(--item-background);
   border-radius: 24px;
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
   z-index: 3;
-  max-height: 100svh;
+  max-height: 95svh;
 }
 
 @media (max-width: 1200px) {
   .modal-window {
     border-radius: 0;
     height: 100svh;
+    max-height: 100svh;
     width: 100svw;
     padding: 0;
+  }
+
+  .v-leave-active .modal-window {
+    border-radius: 16px;
   }
 }
 </style>

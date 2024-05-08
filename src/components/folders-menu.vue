@@ -2,7 +2,8 @@
 import { useNotesStore } from '@/stores/notesStore';
 import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';
-import CustomButton from '@/components/ui/custom-button.vue';
+
+import { CustomButton } from '@/components/ui';
 import FoldersMenuItem from '@/components/folders-menu-item.vue';
 
 const notesStore = useNotesStore();
@@ -12,7 +13,7 @@ const { setSelectedFolderId } = notesStore;
 
 const hasShallowNoteFolder = ref(false);
 
-watch(noteFolders, () => (hasShallowNoteFolder.value = false));
+watch(noteFolders.value, () => (hasShallowNoteFolder.value = false));
 </script>
 
 <template>
@@ -53,7 +54,7 @@ watch(noteFolders, () => (hasShallowNoteFolder.value = false));
 
       <CustomButton
         class="folder-create-button"
-        @click="() => (hasShallowNoteFolder = true)"
+        @click="hasShallowNoteFolder = true"
         :disabled="hasShallowNoteFolder"
       >
         <span class="material-symbols-rounded outlined">add</span>

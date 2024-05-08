@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { onMounted, watch } from 'vue';
+import { useNotesStore } from '@/stores/notesStore';
+import { storeToRefs } from 'pinia';
 
 import AppHeader from '@/components/app-header.vue';
 import NoteList from '@/components/note-list.vue';
 import NoteForm from '@/components/note-form.vue';
 import FoldersMenu from '@/components/folders-menu.vue';
-
-import { useNotesStore } from '@/stores/notesStore';
-import { storeToRefs } from 'pinia';
 import NoteInfo from '@/components/note-info.vue';
 import CustomButton from '@/components/ui/custom-button.vue';
 
@@ -48,8 +47,9 @@ watch([showNoteInfo, showNoteForm], (currentValues) => {
     <div v-if="!isLoading" class="app-container">
       <FoldersMenu />
       <NoteList />
-      <NoteInfo :isOpen="showNoteInfo" />
-      <NoteForm :isOpen="showNoteForm" />
+
+      <NoteInfo />
+      <NoteForm />
 
       <CustomButton class="add-note-fab" @click="toggleNoteForm">
         <span class="material-symbols-rounded">note_stack_add</span>

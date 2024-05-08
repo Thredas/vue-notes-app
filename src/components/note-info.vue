@@ -1,19 +1,19 @@
 <script lang="ts" setup>
+import { onUpdated, ref, watch } from 'vue';
+import { useNotesStore } from '@/stores/notesStore';
+import { storeToRefs } from 'pinia';
+import { ModalWindow, CustomButton } from '@/components/ui';
+import { QuillEditor } from '@vueup/vue-quill';
 import {
   Listbox,
   ListboxButton,
   ListboxOptions,
   ListboxOption,
 } from '@headlessui/vue';
-import ModalWindow from '@/components/ui/modal-window.vue';
-
-import { useNotesStore } from '@/stores/notesStore';
-import { storeToRefs } from 'pinia';
-import { QuillEditor } from '@vueup/vue-quill';
-import { ref, watch } from 'vue';
 
 const notesStore = useNotesStore();
-const { currentOpenedNote, noteFolders } = storeToRefs(notesStore);
+const { currentOpenedNote, noteFolders, showNoteInfo } =
+  storeToRefs(notesStore);
 const {
   toggleNoteInfo,
   toggleNoteForm,
@@ -22,10 +22,16 @@ const {
   changeFoldersInNote,
 } = notesStore;
 
-const selectedFolders = ref<string[]>(currentOpenedNote.value?.folders ?? []);
+const selectedFolders = ref<string[]>([]);
+
+onUpdated(() => {
+  if (currentOpenedNote.value?.folders) {
+    selectedFolders.value = [...currentOpenedNote.value.folders];
+  }
+});
 
 watch(selectedFolders, () => {
-  if (currentOpenedNote.value) {
+  if (currentOpenedNote.value?.id) {
     changeFoldersInNote(currentOpenedNote.value.id, selectedFolders.value);
   }
 });
@@ -42,7 +48,11 @@ const closeModal = () => {
 </script>
 
 <template>
-  <ModalWindow class="note-info__modal" :close-modal-func="closeModal">
+  <ModalWindow
+    :isOpen="showNoteInfo"
+    class="note-info__modal"
+    :close-modal-func="closeModal"
+  >
     <div id="note-info" class="note-info">
       <div class="note-info__header">
         <span class="note-info__title">{{ currentOpenedNote?.title }}</span>
@@ -148,7 +158,7 @@ const closeModal = () => {
 .note-info {
   display: flex;
   flex-direction: column;
-  min-height: 900px;
+  height: 100%;
 }
 
 .note-info__header {
@@ -193,6 +203,7 @@ const closeModal = () => {
 
 .note-info__text {
   overflow: hidden;
+  flex: 1;
 }
 
 :global(.note-info__text .ql-editor) {
