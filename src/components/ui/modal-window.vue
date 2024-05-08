@@ -85,7 +85,7 @@ const closeModal = () => {
 
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 150ms ease;
 }
 
 .v-enter-from,
@@ -99,8 +99,8 @@ const closeModal = () => {
 }
 
 .v-leave-active .modal-window {
-  animation: 0.12s cubic-bezier(0.17, 0.67, 0.83, 0.67) reverse forwards
-    bounce-in;
+  animation: bounce-in 0.12s cubic-bezier(0.17, 0.67, 0.83, 0.67) reverse
+    forwards;
 }
 
 @keyframes bounce-in {
@@ -138,7 +138,12 @@ const closeModal = () => {
   }
 
   .v-leave-active .modal-window {
-    border-radius: 16px;
+    border-radius: 32px;
+  }
+
+  .modal-window__container.v-leave-active,
+  .modal-window__container.v-enter-active {
+    background-color: transparent !important;
   }
 }
 </style>

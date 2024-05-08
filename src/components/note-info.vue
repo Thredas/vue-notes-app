@@ -233,10 +233,10 @@ const closeModal = () => {
   align-items: center;
   gap: 8px;
   max-width: 200px;
-  width: 150px;
+  width: 250px;
   height: 100%;
   background-color: transparent;
-  border: 2px var(--secondary) solid;
+  border: 1px var(--secondary) solid;
   border-radius: 8px;
   padding: 4px 8px;
   cursor: pointer;
@@ -268,8 +268,8 @@ const closeModal = () => {
   min-width: 250px;
   width: fit-content;
   background-color: var(--item-background);
-  border: 2px var(--secondary) solid;
-  box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
+  border: 1px var(--secondary) solid;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   height: fit-content;
   padding-left: 0 !important;

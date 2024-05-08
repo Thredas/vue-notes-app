@@ -6,6 +6,7 @@ import { storeToRefs } from 'pinia';
 import { Note } from '@/types';
 import { CustomButton } from '@/components/ui';
 import { QuillEditor } from '@vueup/vue-quill';
+import NoteListItemContextMenu from '@/components/note-list-item-context-menu.vue';
 
 type NoteListItemProps = {
   note: Note;
@@ -56,9 +57,7 @@ const openNoteInfo = () => {
           </span>
         </CustomButton>
 
-        <CustomButton class="note-item__button" @click.stop>
-          <span class="material-symbols-rounded">more_vert</span>
-        </CustomButton>
+        <NoteListItemContextMenu />
       </span>
     </span>
 
@@ -86,9 +85,8 @@ const openNoteInfo = () => {
   border-radius: 24px;
   border: 2px rgba(17, 17, 17, 0.1) solid;
   background-color: var(--item-background);
-  transition: all 100ms, opacity 50ms;
-  transition-delay: 0ms, 100ms;
-  overflow: hidden;
+  transition: all 100ms, opacity 0ms;
+  transition-delay: 0ms, 150ms;
   cursor: default;
 }
 
@@ -102,7 +100,7 @@ const openNoteInfo = () => {
 }
 
 .note-item.fading {
-  transition: opacity 0.15s ease-out !important;
+  transition: 0.15s ease-out !important;
   opacity: 0;
 }
 

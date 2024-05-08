@@ -13,7 +13,11 @@ const { toggleNoteForm } = notesStore;
   <div class="header__container">
     <header>
       <div class="header__title_container">
-        <img class="header__title_logo" src="@/assets/logo.png" alt="logo" />
+        <img
+          class="header__title_logo"
+          src="@/assets/images/logo.png"
+          alt="logo"
+        />
         <span class="header__title_text">Notes</span>
       </div>
 

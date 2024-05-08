@@ -12,6 +12,11 @@
   --danger: #e11414;
 }
 
+@font-face {
+  font-family: 'Golos Text';
+  src: url('@/assets/fonts/GolosText-VariableFont_wght.ttf');
+}
+
 body {
   font-family: 'Golos Text', sans-serif !important;
   font-size: 16px;
