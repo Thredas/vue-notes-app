@@ -9,6 +9,7 @@ import NoteForm from '@/components/note-form.vue';
 import FoldersMenu from '@/components/folders-menu.vue';
 import NoteInfo from '@/components/note-info.vue';
 import CustomButton from '@/components/ui/custom-button.vue';
+import MaterialIcon from '@/components/ui/material-icon.vue';
 
 const notesStore = useNotesStore();
 const { isLoading, showNoteInfo, showNoteForm } = storeToRefs(notesStore);
@@ -52,7 +53,7 @@ watch([showNoteInfo, showNoteForm], (currentValues) => {
       <NoteForm />
 
       <CustomButton class="add-note-fab" @click="toggleNoteForm">
-        <span class="material-symbols-rounded">note_stack_add</span>
+        <MaterialIcon name="note_stack_add" />
       </CustomButton>
     </div>
   </div>

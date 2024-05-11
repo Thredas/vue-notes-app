@@ -1,6 +1,9 @@
 <script>
+import MaterialIcon from '@/components/ui/material-icon.vue';
+
 export default {
   name: 'TextField',
+  components: { MaterialIcon },
   props: {
     modelValue: [String, Number, null],
     inputClasses: String,
@@ -30,9 +33,8 @@ export default {
       @input="updateInput"
       :placeholder="placeholder"
     />
-    <span v-if="icon" class="material-symbols-rounded input-icon">
-      {{ icon }}
-    </span>
+
+    <MaterialIcon v-if="icon" :name="icon" class="input-icon" />
   </div>
 </template>
 

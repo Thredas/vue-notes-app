@@ -4,6 +4,7 @@ import { computed, ref, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import NoteListItem from '@/components/note-list-item.vue';
+import MaterialIcon from '@/components/ui/material-icon.vue';
 
 const notesStore = useNotesStore();
 const { notes, selectedFolderId, searchQuery, PINNED_FOLDER_ID } =
@@ -66,13 +67,13 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div v-if="notesFilteredBySearchQuery.length > 0">
+  <div>
     <div class="note-list__pinned__container" v-show="pinnedNotes.length > 0">
       <span
         v-show="selectedFolderId !== PINNED_FOLDER_ID"
         class="note-list__pinned__title"
       >
-        <span class="folders-item-icon material-symbols-rounded">keep</span>
+        <MaterialIcon class="folders-item-icon" name="keep" />
         Pinned notes
       </span>
 
@@ -98,12 +99,35 @@ watchEffect(() => {
     </div>
   </div>
 
-  <div v-else class="empty-note-list-container">
-    <span class="empty-note-list-text">
-      There's no notes yet<br />
-      Click "Add note" button to add one
-    </span>
-  </div>
+  <Transition>
+    <div v-if="notes.length === 0" class="empty-note-list-container">
+      <span class="empty-note-list-text">
+        There's no notes yet<br />
+        Click "Add note" button to add one
+      </span>
+    </div>
+
+    <div
+      v-else-if="notesFilteredByFolder.length === 0"
+      class="empty-note-list-container"
+    >
+      <span class="empty-note-list-text">
+        This folder is empty<br />
+        You can add notes in this folder by selecting it in note
+      </span>
+    </div>
+
+    <div
+      v-else-if="notesFilteredBySearchQuery.length === 0"
+      class="empty-note-list-container"
+    >
+      <span class="empty-note-list-text">
+        Nothing was found for<br />
+        "{{ searchQuery }}"<br />
+        search query
+      </span>
+    </div>
+  </Transition>
 </template>
 
 <style scoped>
@@ -125,6 +149,8 @@ watchEffect(() => {
   align-items: center;
   text-align: center;
   margin-top: 128px;
+  max-width: 900px;
+  word-break: break-word;
 }
 
 .empty-note-list-text {
@@ -167,6 +193,20 @@ watchEffect(() => {
 
 .list-leave-active {
   position: absolute;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
+.v-enter-active {
+  transition: 150ms;
+}
+
+.v-leave-active {
+  opacity: 0;
+  transition: 0s;
 }
 
 @media (max-width: 1200px) {

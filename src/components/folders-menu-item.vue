@@ -2,6 +2,7 @@
 import { defineProps, ref, onMounted } from 'vue';
 import { useNotesStore } from '@/stores/notesStore';
 import { TextField, CustomButton } from '@/components/ui';
+import MaterialIcon from '@/components/ui/material-icon.vue';
 
 type FolderMenuItemProps = {
   id?: string;
@@ -26,12 +27,11 @@ onMounted(() => inputRef.value && inputRef.value.focus());
     :class="{ active: isActive, 'no-hover': isForm }"
   >
     <div class="folders-menu__item__title_container">
-      <span
-        class="folders-item-icon material-symbols-rounded"
-        :class="{ outlined: !isActive }"
-      >
-        {{ icon ?? 'folder' }}
-      </span>
+      <MaterialIcon
+        :name="icon ?? 'folder'"
+        :outlined="!isActive"
+        class="folders-item-icon"
+      />
 
       <span v-show="!isForm">{{ name }}</span>
     </div>
@@ -55,7 +55,7 @@ onMounted(() => inputRef.value && inputRef.value.focus());
       @click.stop
       @click="deleteNoteFolder(id as string)"
     >
-      <span class="material-symbols-rounded">delete</span>
+      <MaterialIcon name="delete" outlined />
     </CustomButton>
   </div>
 </template>

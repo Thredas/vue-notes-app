@@ -53,15 +53,6 @@ button {
   color: inherit;
 }
 
-.material-symbols-rounded {
-  font-size: 18px;
-  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 200, 'opsz' 20;
-}
-
-.material-symbols-rounded.outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' -25, 'opsz' 24;
-}
-
 .no-scroll {
   overflow: hidden;
   height: 100%;

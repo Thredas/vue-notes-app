@@ -6,6 +6,7 @@ import { storeToRefs } from 'pinia';
 import { Note } from '@/types';
 import { TextField, ModalWindow, CustomButton } from '@/components/ui';
 import { QuillEditor } from '@vueup/vue-quill';
+import MaterialIcon from '@/components/ui/material-icon.vue';
 
 const notesStore = useNotesStore();
 const { addNote, editNote, toggleNoteForm, toggleNoteInfo, setCurrentNote } =
@@ -89,7 +90,7 @@ const sendFormData = () => {
           @click="goBackToNoteInfo"
           type="button"
         >
-          <span class="material-symbols-rounded">arrow_back</span>
+          <MaterialIcon name="arrow_back" />
         </CustomButton>
 
         <TextField
@@ -105,7 +106,7 @@ const sendFormData = () => {
           @click="closeForm"
           type="button"
         >
-          <span class="material-symbols-rounded">close</span>
+          <MaterialIcon name="close" />
         </CustomButton>
       </div>
 

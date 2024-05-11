@@ -10,6 +10,7 @@ import {
   ListboxOptions,
   ListboxOption,
 } from '@headlessui/vue';
+import MaterialIcon from '@/components/ui/material-icon.vue';
 
 const notesStore = useNotesStore();
 const { currentOpenedNote, noteFolders, showNoteInfo } =
@@ -59,7 +60,7 @@ const closeModal = () => {
 
         <div class="note-info__header_buttons">
           <CustomButton class="note-info__header_button" @click="closeModal">
-            <span class="material-symbols-rounded">close</span>
+            <MaterialIcon name="close" />
           </CustomButton>
         </div>
       </div>
@@ -84,27 +85,8 @@ const closeModal = () => {
           style="position: relative"
           multiple
         >
-          <ListboxOptions class="note-info__footer__folder-select__options">
-            <ListboxOption
-              class="note-info__footer__folder-select__option"
-              v-for="noteFolder in noteFolders"
-              :key="noteFolder.id"
-              :value="noteFolder.id"
-              v-slot="{ selected }"
-            >
-              <span class="note-info__footer__folder-select__option__text">
-                <span class="material-symbols-rounded outlined">folder</span>
-                {{ noteFolder.name }}
-              </span>
-
-              <span v-show="selected" class="material-symbols-rounded outlined"
-                >done</span
-              >
-            </ListboxOption>
-          </ListboxOptions>
-
           <ListboxButton class="note-info__footer__folder-select">
-            <span class="material-symbols-rounded">folder</span>
+            <MaterialIcon name="folder" />
 
             <span
               v-if="selectedFolders.length"
@@ -128,6 +110,23 @@ const closeModal = () => {
               Select folders
             </span>
           </ListboxButton>
+
+          <ListboxOptions class="note-info__footer__folder-select__options">
+            <ListboxOption
+              class="note-info__footer__folder-select__option"
+              v-for="noteFolder in noteFolders"
+              :key="noteFolder.id"
+              :value="noteFolder.id"
+              v-slot="{ selected }"
+            >
+              <span class="note-info__footer__folder-select__option__text">
+                <MaterialIcon name="folder" outlined />
+                {{ noteFolder.name }}
+              </span>
+
+              <MaterialIcon v-show="selected" name="done" />
+            </ListboxOption>
+          </ListboxOptions>
         </Listbox>
 
         <div class="note-info__footer_buttons">
@@ -135,14 +134,14 @@ const closeModal = () => {
             class="note-info__header_button"
             @click="switchToEditMode"
           >
-            <span class="material-symbols-rounded">edit</span>
+            <MaterialIcon name="edit" outlined />
           </CustomButton>
 
           <CustomButton
             class="note-info__header_button"
             @click="removeNote(currentOpenedNote?.id ?? '')"
           >
-            <span class="material-symbols-rounded">delete</span>
+            <MaterialIcon name="delete" outlined />
           </CustomButton>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { Note } from '@/types';
 import { CustomButton } from '@/components/ui';
 import { QuillEditor } from '@vueup/vue-quill';
 import NoteListItemContextMenu from '@/components/note-list-item-context-menu.vue';
+import MaterialIcon from '@/components/ui/material-icon.vue';
 
 type NoteListItemProps = {
   note: Note;
@@ -23,13 +24,16 @@ const { setStartAnimInfo } = animStore;
 
 const noteListItemRef = ref<HTMLDivElement | null>(null);
 
-const openNoteInfo = () => {
-  toggleNoteInfo();
-  setCurrentNote(props.note.id);
-
+const setModalAnimationCoordinates = () => {
   if (noteListItemRef.value) {
     setStartAnimInfo(noteListItemRef.value.getBoundingClientRect());
   }
+};
+
+const openNoteInfo = () => {
+  setCurrentNote(props.note.id);
+  setModalAnimationCoordinates();
+  toggleNoteInfo();
 };
 </script>
 
@@ -49,15 +53,17 @@ const openNoteInfo = () => {
           @click.stop
           @click="toggleIsNotePinned(note.id)"
         >
-          <span
-            class="material-symbols-rounded"
-            :class="{ outlined: !note.isPinned }"
-          >
-            keep
-          </span>
+          <MaterialIcon
+            class="context-menu__item__icon"
+            name="keep"
+            :outlined="!note.isPinned"
+          />
         </CustomButton>
 
-        <NoteListItemContextMenu />
+        <NoteListItemContextMenu
+          :note="note"
+          :setModalAnimationCoordinates="setModalAnimationCoordinates"
+        />
       </span>
     </span>
 

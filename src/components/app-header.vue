@@ -3,6 +3,7 @@ import { useNotesStore } from '@/stores/notesStore';
 import { storeToRefs } from 'pinia';
 
 import { TextField, CustomButton } from '@/components/ui';
+import MaterialIcon from '@/components/ui/material-icon.vue';
 
 const notesStore = useNotesStore();
 const { searchQuery } = storeToRefs(notesStore);
@@ -32,15 +33,14 @@ const { toggleNoteForm } = notesStore;
         />
 
         <CustomButton class="header__create-button" @click="toggleNoteForm">
-          <span class="material-symbols-rounded">note_stack_add</span>
+          <MaterialIcon name="note_stack_add" />
           Create note
         </CustomButton>
 
-        <CustomButton class="header__user-avatar-button">
-          <span class="material-symbols-rounded user-avatar-placeholder">
-            person
-          </span>
-        </CustomButton>
+        <!--   TODO: Profile context menu     -->
+        <!--        <CustomButton class="header__user-avatar-button">-->
+        <!--          <MaterialIcon name="person" class="user-avatar-placeholder" />-->
+        <!--        </CustomButton>-->
       </div>
     </header>
   </div>
@@ -99,7 +99,6 @@ header {
   font-size: 16px;
   border-radius: 32px !important;
   background-color: var(--secondary);
-  color: var(--text-secondary);
   transition: 0.1s;
   border: 0 !important;
 }

@@ -5,6 +5,7 @@ import { ref, watch } from 'vue';
 
 import { CustomButton } from '@/components/ui';
 import FoldersMenuItem from '@/components/folders-menu-item.vue';
+import MaterialIcon from '@/components/ui/material-icon.vue';
 
 const notesStore = useNotesStore();
 const { noteFolders, selectedFolderId, PINNED_FOLDER_ID } =
@@ -35,20 +36,22 @@ watch(noteFolders.value, () => (hasShallowNoteFolder.value = false));
 
       <hr class="folder-divider" />
 
-      <FoldersMenuItem
-        v-for="noteFolder in noteFolders"
-        :key="noteFolder.id"
-        :id="noteFolder.id"
-        :name="noteFolder.name"
-        :isActive="selectedFolderId === noteFolder.id"
-        @click="setSelectedFolderId(noteFolder.id)"
-      />
+      <TransitionGroup name="folders">
+        <FoldersMenuItem
+          v-for="noteFolder in noteFolders"
+          :key="noteFolder.id"
+          :id="noteFolder.id"
+          :name="noteFolder.name"
+          :isActive="selectedFolderId === noteFolder.id"
+          @click="setSelectedFolderId(noteFolder.id)"
+        />
 
-      <FoldersMenuItem
-        v-if="hasShallowNoteFolder"
-        :isForm="true"
-        @closeShallowNoteFolder="hasShallowNoteFolder = false"
-      />
+        <FoldersMenuItem
+          v-if="hasShallowNoteFolder"
+          :isForm="true"
+          @closeShallowNoteFolder="hasShallowNoteFolder = false"
+        />
+      </TransitionGroup>
 
       <hr v-if="noteFolders.length > 0" class="folder-divider" />
 
@@ -57,7 +60,7 @@ watch(noteFolders.value, () => (hasShallowNoteFolder.value = false));
         @click="hasShallowNoteFolder = true"
         :disabled="hasShallowNoteFolder"
       >
-        <span class="material-symbols-rounded outlined">add</span>
+        <MaterialIcon name="add" outlined />
         Create {{ noteFolders.length > 0 ? 'new' : 'note' }} folder
       </CustomButton>
     </div>
@@ -99,6 +102,17 @@ watch(noteFolders.value, () => (hasShallowNoteFolder.value = false));
 
 .folder-create-button:hover {
   background-color: var(--secondary);
+}
+
+.folders-move,
+.folders-enter-active,
+.folders-leave-active {
+  transition: all 0.15s ease;
+}
+
+.folders-enter-from,
+.folders-leave-to {
+  opacity: 0;
 }
 
 @media (max-width: 1200px) {

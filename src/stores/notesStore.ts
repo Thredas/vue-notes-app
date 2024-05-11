@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { nanoid } from 'nanoid';
 
-import { Note, NoteFolder } from '@/types';
+import { Note, NoteColors, NoteFolder } from '@/types';
 
 export const useNotesStore = defineStore('notes', () => {
   const isLoading = ref<boolean>(true);
@@ -52,6 +52,7 @@ export const useNotesStore = defineStore('notes', () => {
       folders: [],
       createDate: Date.now(),
       updateDate: null,
+      color: NoteColors.default,
     };
 
     notes.value.push(newNote);
@@ -69,7 +70,6 @@ export const useNotesStore = defineStore('notes', () => {
       if (noteIdx !== -1) {
         notes.value.splice(noteIdx, 1);
         localStorage.setItem('notes', JSON.stringify(notes.value));
-        toggleNoteInfo();
       } else {
         alert("Can't delete a note, that doesn't exist");
       }
@@ -89,6 +89,17 @@ export const useNotesStore = defineStore('notes', () => {
       localStorage.setItem('notes', JSON.stringify(notes.value));
     } else {
       alert("Can't edit a note, that doesn't exist");
+    }
+  };
+
+  const copyNote = (id: string) => {
+    const noteIdx = findNoteById(id);
+
+    if (noteIdx !== -1) {
+      notes.value.splice(noteIdx, 0, notes.value[noteIdx]);
+      localStorage.setItem('notes', JSON.stringify(notes.value));
+    } else {
+      alert("Can't copy a note, that doesn't exist");
     }
   };
 
@@ -183,8 +194,9 @@ export const useNotesStore = defineStore('notes', () => {
     toggleNoteForm,
     toggleNoteInfo,
     addNote,
-    editNote,
     removeNote,
+    editNote,
+    copyNote,
     setCurrentNote,
     findNoteById,
     setNoteFolders,
