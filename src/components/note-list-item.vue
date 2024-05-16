@@ -92,7 +92,7 @@ const openNoteInfo = () => {
   border: 2px rgba(17, 17, 17, 0.1) solid;
   background-color: var(--item-background);
   transition: all 100ms, opacity 0ms;
-  transition-delay: 0ms, 150ms;
+  transition-delay: 0ms, 200ms;
   cursor: default;
 }
 

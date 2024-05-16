@@ -45,13 +45,13 @@ watch(noteFolders.value, () => (hasShallowNoteFolder.value = false));
           :isActive="selectedFolderId === noteFolder.id"
           @click="setSelectedFolderId(noteFolder.id)"
         />
-
-        <FoldersMenuItem
-          v-if="hasShallowNoteFolder"
-          :isForm="true"
-          @closeShallowNoteFolder="hasShallowNoteFolder = false"
-        />
       </TransitionGroup>
+
+      <FoldersMenuItem
+        v-if="hasShallowNoteFolder"
+        :isForm="true"
+        @closeShallowNoteFolder="hasShallowNoteFolder = false"
+      />
 
       <hr v-if="noteFolders.length > 0" class="folder-divider" />
 

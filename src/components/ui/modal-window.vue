@@ -85,7 +85,7 @@ const closeModal = () => {
 
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 150ms ease;
+  transition: opacity 200ms ease;
 }
 
 .v-enter-from,
@@ -95,21 +95,17 @@ const closeModal = () => {
 }
 
 .v-enter-active .modal-window {
-  animation: bounce-in 0.12s both cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  animation: bounce-in 0.2s both cubic-bezier(0.83, 0, 0.36, 1);
 }
 
 .v-leave-active .modal-window {
-  animation: bounce-in 0.12s cubic-bezier(0.17, 0.67, 0.83, 0.67) reverse
-    forwards;
+  animation: bounce-in 0.2s cubic-bezier(0.83, 0, 0.36, 1) reverse forwards;
 }
 
 @keyframes bounce-in {
   0% {
     transform: translate(v-bind(startAnimX), v-bind(startAnimY))
       scaleX(v-bind(startAnimScaleX)) scaleY(v-bind(startAnimScaleY));
-  }
-  75% {
-    transform: translate(0, 0) scale(1.013);
   }
   100% {
     transform: translate(0, 0) scale(1);
@@ -139,11 +135,6 @@ const closeModal = () => {
 
   .v-leave-active .modal-window {
     border-radius: 32px;
-  }
-
-  .modal-window__container.v-leave-active,
-  .modal-window__container.v-enter-active {
-    background-color: transparent !important;
   }
 }
 </style>
